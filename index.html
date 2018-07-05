@@ -1,32 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Grammar</title>
+<head>
+    <meta charset="UTF-8">
+    <title>Grammar</title>
 
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
 
-        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
 
-        <script src="main.js"></script>
-        <script src="grammar/production.js"></script>
-        <script src="grammar/grammar.js"></script>
-        <script src="grammar/chomsky.js"></script>
+    <script src="main.js"></script>
+    <script src="grammar/production.js"></script>
+    <script src="grammar/grammar.js"></script>
+    <script src="grammar/chomsky.js"></script>
 
-        <link rel="stylesheet" href="style.css">
-    </head>
+    <link rel="stylesheet" href="style.css">
+</head>
 
-    <body>
-        <div class="container">
-            <h1>Grammar!</h1>
+<body>
+    <div class="container">
+        <h1>Grammar!</h1>
 
-            <form id="grammar-form">
-                <div class="form-group">
-                    <textarea id="grammar-input" class="form-control" placeholder="Grammar here boi"></textarea>
-                </div>
-                <button type="submit" class="btn btn-default">Generate</button>
-            </form>
-        </div>
-    </body>
+        <form id="grammar-form">
+            <div class="form-group">
+                <label for="grammar-input">Input your Grammar:</label>
+                <textarea id="grammar-input" class="form-control" placeholder="P -> aBc | d"></textarea>
+                <small class="form-text text-muted">Each production has to be on its own line. Use <strong>-></strong> as an arrow and <strong>|</strong> as an or operator. Leave the right side empty for an &epsilon; rule. The first nonterminal is the start symbol.</small>
+            </div>
+            <button type="submit" class="btn btn-default">Generate</button>
+        </form>
+
+        <hr>
+
+        <div class="alert alert-danger" role="alert" id="grammar-alert"></div>
+        <div id="grammar-display"></div>
+    </div>
+</body>
 </html>

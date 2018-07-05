@@ -3,9 +3,23 @@ $(function() {
         e.preventDefault();
 
         let field = $('#grammar-input');
-        let text = field.val();
+        let display = $('#grammar-display');
+        let alert = $('#grammar-alert');
 
-        let grammar = parseGrammar(text);
-        console.log(grammar);
+        try {
+            let grammar = parseGrammar(field.val());
+
+            alert.hide();
+            alert.html('');
+
+            display.html(grammar.toString());
+            display.show();
+        } catch (e) {
+            alert.html(e);
+            alert.show();
+
+            display.hide();
+            display.html('');
+        }
     });
 });

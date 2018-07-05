@@ -13,6 +13,29 @@ class Grammar {
         let terminals = this.terminals.slice(0);
         return new Grammar(productions, nonterminals, terminals, this.start);
     }
+
+    toString() {
+        let text = '';
+        text += 'G = (N, T, P, S) <em>where</em><br>';
+        text += 'N = {' + this.nonterminals.join(', ') + '}<br>';
+        text += 'T = {' + this.terminals.join(', ') + '}<br>';
+
+        text += 'P = {';
+        for (let i = 0; i < this.productions.length; i++) {
+            let prod = this.productions[i];
+
+            let right = prod.right.length <= 0 ? '&epsilon;' : prod.right.join('');
+            text += prod.left + ' &rarr; ' + right;
+
+            if (i < this.productions.length - 1) {
+                text += ', ';
+            }
+        }
+        text += '}<br>';
+
+        text += 'S = ' + this.start + '';
+        return text;
+    }
 }
 
 function parseGrammar(text) {
@@ -35,10 +58,15 @@ function parseProductions(grammar, lines) {
         for (let i = 0; i < right.length; i++) {
             let char = right.charAt(i);
             if (char !== ' ') {
-                if (!grammar.nonterminals.includes(char) && !grammar.terminals.includes(char)) {
-                    grammar.terminals.push(char);
+                if (char === '|') {
+                    grammar.productions.push(new Production(left, rightArray));
+                    rightArray = new Array();
+                } else {
+                    if (!grammar.nonterminals.includes(char) && !grammar.terminals.includes(char)) {
+                        grammar.terminals.push(char);
+                    }
+                    rightArray.push(char);
                 }
-                rightArray.push(char);
             }
         }
 
@@ -64,9 +92,9 @@ function parseNonterminals(grammar, lines) {
 function makeParts(line) {
     let parts = line.split('->');
     if (parts.length <= 1) {
-        throw 'Line "' + line + '" didn\'t contain an arrow ("->")';
+        throw 'Line <strong>' + line + '</strong> didn\'t contain an arrow';
     } else if (parts.length > 2) {
-        throw 'Line "' + line + '" contained too many arrows ("->")';
+        throw 'Line <strong>' + line + '</strong> contained too many arrows';
     }
 
     return parts;
@@ -75,7 +103,7 @@ function makeParts(line) {
 function makeLeft(parts) {
     let left = parts[0].trim();
     if (left.length != 1) {
-        throw 'Productions must only have one nonterminal on the left side! ("' + left + '" in line "' + line + '")';
+        throw 'Productions must only have one nonterminal on the left side (line <strong>' + line + '</strong>)';
     }
     return left;
 }

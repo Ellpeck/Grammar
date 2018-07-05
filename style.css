@@ -2,3 +2,15 @@
     font-family: monospace;
     min-height: 150px;
 }
+
+#grammar-display {
+    font-family: monospace;
+}
+
+#grammar-alert {
+    display: none;
+}
+
+#grammar-display {
+    display: none;
+}
