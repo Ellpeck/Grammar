@@ -6,3 +6,11 @@
 #grammar-display {
     font-family: monospace;
 }
+
+#grammar-alert {
+    display: none;
+}
+
+#grammar-display {
+    display: none;
+}

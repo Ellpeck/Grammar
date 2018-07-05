@@ -84,9 +84,9 @@ function parseNonterminals(grammar, lines) {
 function makeParts(line) {
     let parts = line.split('->');
     if (parts.length <= 1) {
-        throw 'Line "' + line + '" didn\'t contain an arrow ("->")';
+        throw 'Line <strong>' + line + '</strong> didn\'t contain an arrow';
     } else if (parts.length > 2) {
-        throw 'Line "' + line + '" contained too many arrows ("->")';
+        throw 'Line <strong>' + line + '</strong> contained too many arrows';
     }
 
     return parts;
@@ -95,7 +95,7 @@ function makeParts(line) {
 function makeLeft(parts) {
     let left = parts[0].trim();
     if (left.length != 1) {
-        throw 'Productions must only have one nonterminal on the left side! ("' + left + '" in line "' + line + '")';
+        throw 'Productions must only have one nonterminal on the left side (line <strong>' + line + '</strong>)';
     }
     return left;
 }

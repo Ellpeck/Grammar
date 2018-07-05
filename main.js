@@ -4,8 +4,22 @@ $(function() {
 
         let field = $('#grammar-input');
         let display = $('#grammar-display');
+        let alert = $('#grammar-alert');
 
-        let grammar = parseGrammar(field.val());
-        display.html(grammar.toString());
+        try {
+            let grammar = parseGrammar(field.val());
+
+            alert.hide();
+            alert.html('');
+
+            display.html(grammar.toString());
+            display.show();
+        } catch (e) {
+            alert.html(e);
+            alert.show();
+
+            display.hide();
+            display.html('');
+        }
     });
 });
