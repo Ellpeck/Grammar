@@ -1,14 +1,22 @@
 class Grammar {
-    constructor() {
-        this.productions = new Array();
-        this.nonterminals = new Array();
-        this.terminals = new Array();
-        this.start = undefined;
+    constructor(productions, nonterminals, terminals, start) {
+        this.productions = productions;
+        this.nonterminals = nonterminals;
+        this.terminals = terminals;
+        this.start = start;
+    }
+
+    // creates a deep copy
+    clone() {
+        let productions = this.productions.map(prod => prod.clone());
+        let nonterminals = this.nonterminals.slice(0);
+        let terminals = this.terminals.slice(0);
+        return new Grammar(productions, nonterminals, terminals, this.start);
     }
 }
 
 function parseGrammar(text) {
-    let grammar = new Grammar();
+    let grammar = new Grammar(new Array(), new Array(), new Array(), undefined);
 
     let lines = text.split('\n');
     parseNonterminals(grammar, lines);
