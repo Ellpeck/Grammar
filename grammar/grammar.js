@@ -8,14 +8,16 @@ class Grammar {
 
     toString() {
         let text = '';
-        text += 'G = (N, T, P, S) <em>with</em><br>';
+        text += 'G = (N, T, P, S) <em>where</em><br>';
         text += 'N = {' + this.nonterminals.join(', ') + '}<br>';
         text += 'T = {' + this.terminals.join(', ') + '}<br>';
 
         text += 'P = {';
         for (let i = 0; i < this.productions.length; i++) {
             let prod = this.productions[i];
-            text += prod.left + ' &rarr; ' + prod.right.join('');
+
+            let right = prod.right.length <= 0 ? '&epsilon;' : prod.right.join('');
+            text += prod.left + ' &rarr; ' + right;
 
             if (i < this.productions.length - 1) {
                 text += ', ';
@@ -48,10 +50,15 @@ function parseProductions(grammar, lines) {
         for (let i = 0; i < right.length; i++) {
             let char = right.charAt(i);
             if (char !== ' ') {
-                if (!grammar.nonterminals.includes(char) && !grammar.terminals.includes(char)) {
-                    grammar.terminals.push(char);
+                if (char === '|') {
+                    grammar.productions.push(new Production(left, rightArray));
+                    rightArray = new Array();
+                } else {
+                    if (!grammar.nonterminals.includes(char) && !grammar.terminals.includes(char)) {
+                        grammar.terminals.push(char);
+                    }
+                    rightArray.push(char);
                 }
-                rightArray.push(char);
             }
         }
 
