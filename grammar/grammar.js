@@ -5,6 +5,27 @@ class Grammar {
         this.terminals = new Array();
         this.start = undefined;
     }
+
+    toString() {
+        let text = '';
+        text += 'G = (N, T, P, S) <em>with</em><br>';
+        text += 'N = {' + this.nonterminals.join(', ') + '}<br>';
+        text += 'T = {' + this.terminals.join(', ') + '}<br>';
+
+        text += 'P = {';
+        for (let i = 0; i < this.productions.length; i++) {
+            let prod = this.productions[i];
+            text += prod.left + ' &rarr; ' + prod.right.join('');
+
+            if (i < this.productions.length - 1) {
+                text += ', ';
+            }
+        }
+        text += '}<br>';
+
+        text += 'S = ' + this.start + '';
+        return text;
+    }
 }
 
 function parseGrammar(text) {

@@ -3,9 +3,9 @@ $(function() {
         e.preventDefault();
 
         let field = $('#grammar-input');
-        let text = field.val();
+        let display = $('#grammar-display');
 
-        let grammar = parseGrammar(text);
-        console.log(grammar);
+        let grammar = parseGrammar(field.val());
+        display.html(grammar.toString());
     });
 });
