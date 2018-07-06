@@ -2,12 +2,14 @@ $(function() {
     let field = $('#grammar-input');
     let display = $('#grammar-display');
     let alert = $('#grammar-alert');
+    let box = $('#grammar-mode');
+    let info = $('#grammar-mode-info');
 
     $('#grammar-form').on('submit', function(e) {
         e.preventDefault();
 
         try {
-            let grammar = parseGrammar(field.val());
+            let grammar = parseGrammar(field.val(), box.is(':checked'));
 
             alert.hide();
             alert.html('');
@@ -22,9 +24,6 @@ $(function() {
             display.html('');
         }
     });
-
-    let box = $('#grammar-mode');
-    let info = $('#grammar-mode-info');
 
     box.on('click', function() {
         let checked = box.is(':checked');
