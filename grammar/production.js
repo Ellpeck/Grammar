@@ -13,6 +13,6 @@ class Production {
     }
 
     clone() {
-        return new Production(this.left, this.right.splice(0));
+        return new Production(this.left, this.right.slice(0));
     }
 }
