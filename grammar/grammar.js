@@ -6,6 +6,18 @@ class Grammar {
         this.start = start;
     }
 
+    getProductionsFor(left) {
+        return this.productions.filter(prod => prod.left === left);
+    }
+
+    isNonterminal(symbol) {
+        return this.nonterminals.includes(symbol);
+    }
+
+    isTerminal(symbol) {
+        return this.terminals.includes(symbol);
+    }
+
     // creates a deep copy
     clone() {
         let productions = this.productions.map(prod => prod.clone());
