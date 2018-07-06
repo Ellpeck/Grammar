@@ -48,6 +48,15 @@ function getSelectedGrammarId() {
     return -1;
 }
 
+function getSelectedGrammar() {
+    let i = getSelectedGrammarId();
+    if (i === -1) {
+        return undefined;
+    } else {
+        return grammars[i];
+    }
+}
+
 function updateGrammarData() {
     let display = $('#grammars');
     display.html('');
@@ -74,5 +83,14 @@ function updateGrammarData() {
         grammars.splice(i, 1);
         updateGrammarData();
         return false;
+    });
+
+
+    $('#generate-chomsky').on('click', function() {
+        let grammar = getSelectedGrammar();
+        if (grammar !== undefined) {
+            let chomskyGrammar = generateChomsky(grammar);
+            addGrammar(chomskyGrammar);
+        }
     });
 }
