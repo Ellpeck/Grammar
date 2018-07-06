@@ -25,9 +25,21 @@
             <div class="form-group">
                 <label for="grammar-input">Input your Grammar:</label>
                 <textarea id="grammar-input" class="form-control" placeholder="P -> aBc | d"></textarea>
-                <small class="form-text text-muted">Each production has to be on its own line. Use <strong>-></strong> as an arrow and <strong>|</strong> as an or operator. Leave the right side empty for an &epsilon; rule. The first nonterminal is the start symbol.</small>
+                <small class="form-text text-muted">Each production has to be on its own line. Use <strong>-></strong> as an arrow and <strong>|</strong> as an or operator. Leave the right side empty for an &epsilon; rule. The first nonterminal is the start symbol. To make any symbol be recognized as a nonterminal, place it on the left side at least once.</small>
             </div>
-            <button type="submit" class="btn btn-default">Generate</button>
+            <div class="form-row">
+                <div class="form-group col-md-11">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="grammar-mode">
+                        <label class="custom-control-label" for="grammar-mode">Allow long symbol names</label>
+                    </div>
+                    <small class="form-text text-muted" id="grammar-mode-info">You will now have to use a space to separate symbols.</small>
+                </div>
+                <div class="form-group col-md-1">
+                    <button type="submit" class="btn btn-default">Generate</button>
+                </div>
+
+            </div>
         </form>
 
         <hr>

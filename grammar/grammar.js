@@ -24,7 +24,7 @@ class Grammar {
         for (let i = 0; i < this.productions.length; i++) {
             let prod = this.productions[i];
 
-            let right = prod.right.length <= 0 ? '&epsilon;' : prod.right.join('');
+            let right = prod.right.length <= 0 ? '&epsilon;' : prod.right.join(' ');
             text += prod.left + ' &rarr; ' + right;
 
             if (i < this.productions.length - 1) {
@@ -38,35 +38,33 @@ class Grammar {
     }
 }
 
-function parseGrammar(text) {
+function parseGrammar(text, longNames) {
     let grammar = new Grammar(new Array(), new Array(), new Array(), undefined);
 
     let lines = text.split('\n');
-    parseNonterminals(grammar, lines);
-    parseProductions(grammar, lines);
+    parseNonterminals(grammar, lines, longNames);
+    parseProductions(grammar, lines, longNames);
 
     return grammar;
 }
 
-function parseProductions(grammar, lines) {
+function parseProductions(grammar, lines, longNames) {
     for (line of lines) {
         let parts = makeParts(line);
-        let left = makeLeft(parts);
+        let left = makeLeft(parts, longNames);
         let right = parts[1].trim();
 
         let rightArray = new Array();
-        for (let i = 0; i < right.length; i++) {
-            let char = right.charAt(i);
-            if (char !== ' ') {
-                if (char === '|') {
-                    grammar.productions.push(new Production(left, rightArray));
-                    rightArray = new Array();
-                } else {
-                    if (!grammar.nonterminals.includes(char) && !grammar.terminals.includes(char)) {
-                        grammar.terminals.push(char);
-                    }
-                    rightArray.push(char);
-                }
+        if (longNames) {
+            let split = right.split(' ');
+            for (let i = 0; i < split.length; i++) {
+                let part = split[i];
+                rightArray = addPart(grammar, rightArray, left, part);
+            }
+        } else {
+            for (let i = 0; i < right.length; i++) {
+                let part = right.charAt(i);
+                rightArray = addPart(grammar, rightArray, left, part);
             }
         }
 
@@ -74,10 +72,25 @@ function parseProductions(grammar, lines) {
     }
 }
 
-function parseNonterminals(grammar, lines) {
+function addPart(grammar, rightArray, left, part) {
+    if (part !== ' ') {
+        if (part === '|') {
+            grammar.productions.push(new Production(left, rightArray));
+            rightArray = new Array();
+        } else {
+            if (!grammar.nonterminals.includes(part) && !grammar.terminals.includes(part)) {
+                grammar.terminals.push(part);
+            }
+            rightArray.push(part);
+        }
+    }
+    return rightArray;
+}
+
+function parseNonterminals(grammar, lines, longNames) {
     for (line of lines) {
         let parts = makeParts(line);
-        let left = makeLeft(parts);
+        let left = makeLeft(parts, longNames);
 
         if (grammar.start === undefined) {
             grammar.start = left;
@@ -100,9 +113,9 @@ function makeParts(line) {
     return parts;
 }
 
-function makeLeft(parts) {
+function makeLeft(parts, longNames) {
     let left = parts[0].trim();
-    if (left.length != 1) {
+    if (longNames ? left.includes(' ') : left.length != 1) {
         throw 'Productions must only have one nonterminal on the left side (line <strong>' + line + '</strong>)';
     }
     return left;
