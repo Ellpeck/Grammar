@@ -32,65 +32,64 @@ $(function() {
             field.attr('placeholder', 'P -> aBc | d');
         }
     });
-});
-
-function addGrammar(grammar) {
-    grammars.push(grammar);
-    updateGrammarData();
-}
-
-function getSelectedGrammarId() {
-    for (let i = 0; i < grammars.length; i++) {
-        if ($('#grammar-' + i).hasClass('active')) {
-            return i;
-        }
-    }
-    return -1;
-}
-
-function getSelectedGrammar() {
-    let i = getSelectedGrammarId();
-    if (i === -1) {
-        return undefined;
-    } else {
-        return grammars[i];
-    }
-}
-
-function updateGrammarData() {
-    let display = $('#grammars');
-    display.html('');
-    for (let i = grammars.length - 1; i >= 0; i--) {
-        let html = '<div class="list-group-item list-group-item-action" data-toggle="list" id=grammar-' + i + '>';
-        html += '<div class="row align-items-center">'
-
-        html += '<div class="col-md-11">'
-        html += grammars[i].toString();
-        html += '</div>';
-
-        html += '<div class="col-md-1">'
-        html += '<button type="button" class="btn grammar-remove" id="grammar-remove-' + i + '">X</button>'
-        html += '</div>';
-
-        html += '</div>';
-        html += '</div>';
-
-        display.append(html);
-    }
-
-    $('.grammar-remove').on('click', function() {
-        let i = this.id.replace('grammar-remove-', '');
-        grammars.splice(i, 1);
-        updateGrammarData();
-        return false;
-    });
-
 
     $('#generate-chomsky').on('click', function() {
         let grammar = getSelectedGrammar();
-        if (grammar !== undefined) {
+        if (grammar !== null) {
             let chomskyGrammar = generateChomsky(grammar);
             addGrammar(chomskyGrammar);
         }
     });
+});
+
+function addGrammar(grammar) {
+    let list = $('#grammars');
+
+    let i = getNextFreeId();
+    grammars[i] = grammar;
+
+    let html = '<div class="list-group-item list-group-item-action" data-toggle="list" id=grammar-' + i + '>';
+    html += '<div class="row align-items-center">'
+
+    html += '<div class="col-md-11">'
+    html += grammars[i].toString();
+    html += '</div>';
+
+    html += '<div class="col-md-1">'
+    html += '<button type="button" class="btn" id="grammar-remove-' + i + '">X</button>'
+    html += '</div>';
+
+    html += '</div>';
+    html += '</div>';
+
+    list.append(html);
+    $('#grammar-' + i).tab('show');
+
+    $('#grammar-remove-' + i).on('click', function() {
+        removeGrammar(i);
+        return false;
+    });
+}
+
+function removeGrammar(i) {
+    grammars[i] = null;
+    $('#grammar-' + i).remove();
+}
+
+function getNextFreeId() {
+    for (let i = 0; i < grammars.length; i++) {
+        if (grammars[i] === null) {
+            return i;
+        }
+    }
+    return grammars.length;
+}
+
+function getSelectedGrammar() {
+    for (let i = 0; i < grammars.length; i++) {
+        if ($('#grammar-' + i).hasClass('active')) {
+            return grammars[i];
+        }
+    }
+    return null;
 }
