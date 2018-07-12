@@ -38,7 +38,7 @@ function bloatTerminals(grammar) {
     let newGrammar = grammar.clone();
 
     for (terminal of newGrammar.terminals) {
-        let nonterminal = 'T<sub>' + terminal + '</sub>';
+        let nonterminal = 'T_' + terminal;
         while (newGrammar.nonterminals.includes(nonterminal)) {
             nonterminal += '\'';
         }
@@ -48,6 +48,7 @@ function bloatTerminals(grammar) {
         }
         newGrammar.productions.push(new Production(nonterminal, [terminal]));
         newGrammar.nonterminals.push(nonterminal);
+        newGrammar.longSymbols = true;
     }
 
     return newGrammar;
@@ -98,7 +99,7 @@ function reduceRuleLength(grammar) {
                     lastSymbol = right[right.length - 1];
                 } else {
                     // create new nonterminal
-                    lastSymbol = left + '<sub>' + i + '</sub>';
+                    lastSymbol = left + '_' + i;
                     while (newNonterminals.includes(lastSymbol)) {
                         lastSymbol += '\'';
                     }
@@ -111,5 +112,5 @@ function reduceRuleLength(grammar) {
         }
     }
 
-    return new Grammar(newProds, newNonterminals, grammar.terminals.slice(0), grammar.start);
+    return new Grammar(newProds, newNonterminals, grammar.terminals.slice(0), grammar.start, true);
 }
