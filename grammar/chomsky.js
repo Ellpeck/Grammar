@@ -80,13 +80,13 @@ function eliminateDirectRules(grammar) {
         }
     }
 
-    return new Grammar(newProds, grammar.nonterminals.slice(0), grammar.terminals.slice(0), grammar.start);
+    return new Grammar(newProds, grammar.nonterminals.clone(), grammar.terminals.clone(), grammar.start);
 }
 
 // split all rules with more than two right side symbols into chain of two symbols
 function reduceRuleLength(grammar) {
     let newProds = new Array();
-    let newNonterminals = grammar.nonterminals.slice(0);
+    let newNonterminals = grammar.nonterminals.clone();
     for (prod of grammar.productions) {
         if (prod.right.length > 2) {
             let left = prod.left;
@@ -111,5 +111,5 @@ function reduceRuleLength(grammar) {
         }
     }
 
-    return new Grammar(newProds, newNonterminals, grammar.terminals.slice(0), grammar.start);
+    return new Grammar(newProds, newNonterminals, grammar.terminals.clone(), grammar.start);
 }

@@ -21,8 +21,8 @@ class Grammar {
     // creates a deep copy
     clone() {
         let productions = this.productions.map(prod => prod.clone());
-        let nonterminals = this.nonterminals.slice(0);
-        let terminals = this.terminals.slice(0);
+        let nonterminals = this.nonterminals.clone();
+        let terminals = this.terminals.clone();
         return new Grammar(productions, nonterminals, terminals, this.start);
     }
 
