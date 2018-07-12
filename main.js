@@ -52,6 +52,7 @@ function addGrammar(grammar) {
     html += '<div class="row align-items-center">'
 
     html += '<div class="col-md-11">'
+    html += '<i>' + grammars[i].classify().join(', ') + '</i><br>'
     html += grammars[i].toString();
     html += '</div>';
 

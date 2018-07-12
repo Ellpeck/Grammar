@@ -18,6 +18,59 @@ class Grammar {
         return this.terminals.includes(symbol);
     }
 
+    // lazy evaluated on first call
+    classify() {
+        if (this.class !== undefined) {
+            return this.class;
+        }
+        let chomsky = true;
+        let greibach = true;
+        let leftLinear = true;
+        let rightLinear = true;
+        for (let prod of this.productions) {
+            if (prod.right.length > 2) {
+                chomsky = false;
+                leftLinear = false;
+                rightLinear = false;
+            } else if (prod.right.length == 2) {
+                let leftTerminal = this.isTerminal(prod.right[0]);
+                let rightTerminal = this.isTerminal(prod.right[1]);
+                chomsky &= !leftTerminal && !rightTerminal;
+                leftLinear &= leftTerminal && !rightTerminal;
+                rightLinear &= !leftTerminal && rightTerminal;
+            } else if (prod.right.length == 1) {
+                let terminal = this.isTerminal(prod.right[0]);
+                chomsky &= terminal;
+                leftLinear &= terminal;
+                rightLinear &= terminal;
+            } else { // prod.right.isEpsilon
+                chomsky = false;
+                leftLinear = false;
+                rightLinear = false;
+            }
+
+            greibach &= !prod.isEpsilon() && this.isTerminal(prod.right[0]);
+            for (let i = 1; i < prod.right.length; i++) {
+                greibach &= this.isNonterminal(prod.right[i]);
+            }
+        }
+
+        this.class = new Array();
+        if (chomsky) {
+            this.class.push(CLASS_CHOMSKY);
+        }
+        if (greibach) {
+            this.class.push(CLASS_GREIBACH);
+        }
+        if (leftLinear) {
+            this.class.push(CLASS_LEFT_LINEAR);
+        }
+        if (rightLinear) {
+            this.class.push(CLASS_RIGHT_LINEAR);
+        }
+        return this.class;
+    }
+
     // creates a deep copy
     clone() {
         let productions = this.productions.map(prod => prod.clone());
