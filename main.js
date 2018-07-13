@@ -52,8 +52,15 @@ function addGrammar(grammar) {
     html += '<div class="row align-items-center">'
 
     html += '<div class="col-md-11">'
-    html += '<i>' + grammars[i].classify().join(', ') + '</i><br>'
     html += grammars[i].toString();
+
+    html += '<br><strong>Properties</strong><br>';
+    let classes = grammars[i].classify();
+    if (classes.length > 0) {
+        html += '<em>' + classes.map(x => fancyClassName(x)).join('<br>') + '</em>'
+    } else {
+        html += '<em>No normal forms</em>';
+    }
     html += '</div>';
 
     html += '<div class="col-md-1">'
