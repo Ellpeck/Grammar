@@ -21,7 +21,7 @@ $(function() {
         }
     });
 
-    box.on('click', function() {
+    box.on('change', function() {
         let checked = box.is(':checked');
 
         if (checked) {
@@ -82,12 +82,20 @@ function addGrammar(grammar) {
     html += '<div class="row align-items-center">'
 
     html += '<div class="col-md-11">'
-    html += '<i>' + grammars[i].classify().join(', ') + '</i><br>'
     html += grammars[i].toString();
+
+    html += '<br><strong>Properties</strong><br>';
+    let classes = grammars[i].classify();
+    if (classes.length > 0) {
+        html += '<em>' + classes.map(x => fancyClassName(x)).join('<br>') + '</em>'
+    } else {
+        html += '<em>No normal forms</em>';
+    }
     html += '</div>';
 
     html += '<div class="col-md-1">'
-    html += '<button type="button" class="btn" id="grammar-remove-' + i + '">X</button>'
+    html += '<button type="button" class="btn float-right grammar-action" id="grammar-copy-' + i + '">^</button>';
+    html += '<button type="button" class="btn float-right grammar-action" id="grammar-remove-' + i + '">X</button>';
     html += '</div>';
 
     html += '</div>';
@@ -99,6 +107,18 @@ function addGrammar(grammar) {
     $('#grammar-remove-' + i).on('click', function() {
         removeGrammar(i);
         return false;
+    });
+
+    $('#grammar-copy-' + i).on('click', function() {
+        let text = '';
+        for (prod of grammars[i].productions) {
+            text += prod.left + ' \u2192 ' + prod.right.join(' ') + '\n';
+        }
+        $('#grammar-input').val(text);
+
+        let box = $('#grammar-mode');
+        box.prop('checked', grammars[i].longSymbols);
+        box.trigger('change');
     });
 }
 

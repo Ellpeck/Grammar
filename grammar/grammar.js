@@ -1,9 +1,10 @@
 class Grammar {
-    constructor(productions, nonterminals, terminals, start) {
+    constructor(productions, nonterminals, terminals, start, longSymbols) {
         this.productions = productions;
         this.nonterminals = nonterminals;
         this.terminals = terminals;
         this.start = start;
+        this.longSymbols = longSymbols;
     }
 
     getProductionsFor(left) {
@@ -80,35 +81,59 @@ class Grammar {
         let productions = this.productions.map(prod => prod.clone());
         let nonterminals = this.nonterminals.clone();
         let terminals = this.terminals.clone();
-        return new Grammar(productions, nonterminals, terminals, this.start);
+        return new Grammar(productions, nonterminals, terminals, this.start, this.longSymbols);
     }
 
     toString() {
         let text = '';
-        text += 'G = (N, T, P, S) <em>where</em><br>';
-        text += 'N = {' + this.nonterminals.join(', ') + '}<br>';
-        text += 'T = {' + this.terminals.join(', ') + '}<br>';
+        text += 'G = (N, T, P, ' + formatSymbol(this.start, true) + ') <em>where</em><br>';
+        text += 'N = {' + this.nonterminals.map(x => formatSymbol(x, true)).join(', ') + '}<br>';
+        text += 'T = {' + this.terminals.map(x => formatSymbol(x, false)).join(', ') + '}<br>';
 
-        text += 'P = {';
+        text += 'P = {<br><span class="prod-display">';
         for (let i = 0; i < this.productions.length; i++) {
             let prod = this.productions[i];
 
-            let right = prod.right.length <= 0 ? '&epsilon;' : prod.right.join(' ');
-            text += prod.left + ' &rarr; ' + right;
+            let right = prod.right.length <= 0 ? '&epsilon;' : prod.right.map(x => formatSymbol(x, this.isNonterminal(x))).join(' ');
+            text += formatSymbol(prod.left, true) + ' &rarr; ' + right;
 
             if (i < this.productions.length - 1) {
                 text += ', ';
             }
-        }
-        text += '}<br>';
 
-        text += 'S = ' + this.start + '';
+            text += '<br>';
+        }
+        text += '</span>}<br>';
+
         return text;
     }
 }
 
+function formatSymbol(x, isNonterm) {
+    let result;
+
+    if (x.length >= 3) {
+        let subs = '';
+
+        let split = x.split('_');
+        result = split[0];
+        for (let i = 1; i < split.length; i++) {
+            result += '<sub>' + split[i];
+            subs += '</sub>';
+        }
+        result += subs;
+    } else {
+        result = x;
+    }
+
+    if (isNonterm) {
+        result = '<span class="nonterm">' + result + '</span>';
+    }
+    return result;
+}
+
 function parseGrammar(text, longNames) {
-    let grammar = new Grammar(new Array(), new Array(), new Array(), undefined);
+    let grammar = new Grammar(new Array(), new Array(), new Array(), undefined, longNames);
 
     let lines = text.split('\n');
     parseNonterminals(grammar, lines, longNames);
@@ -119,25 +144,27 @@ function parseGrammar(text, longNames) {
 
 function parseProductions(grammar, lines, longNames) {
     for (line of lines) {
-        let parts = makeParts(line);
-        let left = makeLeft(parts, longNames);
-        let right = parts[1].trim();
+        if (line.length > 0) {
+            let parts = makeParts(line);
+            let left = makeLeft(parts, longNames);
+            let right = parts[1].trim();
 
-        let rightArray = new Array();
-        if (longNames) {
-            let split = right.split(' ');
-            for (let i = 0; i < split.length; i++) {
-                let part = split[i];
-                rightArray = addPart(grammar, rightArray, left, part);
+            let rightArray = new Array();
+            if (longNames) {
+                let split = right.split(' ');
+                for (let i = 0; i < split.length; i++) {
+                    let part = split[i];
+                    rightArray = addPart(grammar, rightArray, left, part);
+                }
+            } else {
+                for (let i = 0; i < right.length; i++) {
+                    let part = right.charAt(i);
+                    rightArray = addPart(grammar, rightArray, left, part);
+                }
             }
-        } else {
-            for (let i = 0; i < right.length; i++) {
-                let part = right.charAt(i);
-                rightArray = addPart(grammar, rightArray, left, part);
-            }
+
+            grammar.productions.push(new Production(left, rightArray));
         }
-
-        grammar.productions.push(new Production(left, rightArray));
     }
 }
 
@@ -158,21 +185,23 @@ function addPart(grammar, rightArray, left, part) {
 
 function parseNonterminals(grammar, lines, longNames) {
     for (line of lines) {
-        let parts = makeParts(line);
-        let left = makeLeft(parts, longNames);
+        if (line.length > 0) {
+            let parts = makeParts(line);
+            let left = makeLeft(parts, longNames);
 
-        if (grammar.start === undefined) {
-            grammar.start = left;
-        }
+            if (grammar.start === undefined) {
+                grammar.start = left;
+            }
 
-        if (!grammar.nonterminals.includes(left)) {
-            grammar.nonterminals.push(left);
+            if (!grammar.nonterminals.includes(left)) {
+                grammar.nonterminals.push(left);
+            }
         }
     }
 }
 
 function makeParts(line) {
-    let parts = line.split('->');
+    let parts = line.split(/->|\u2192/);
     if (parts.length <= 1) {
         throw 'Line <strong>' + line + '</strong> didn\'t contain an arrow';
     } else if (parts.length > 2) {

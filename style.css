@@ -19,6 +19,26 @@
     display: none;
 }
 
+.list-group-item-action.active {
+    color: black;
+    background-color: #ccd3ff;
+    border-color: #b5bfff;
+}
+
+.nonterm {
+    color: #0f17ff;
+    font-weight: bold;
+}
+
+.prod-display {
+    display: block;
+    margin-left: 20px;
+}
+
+.grammar-action {
+    margin: 3px;
+}
+
 #cyk-table {
     width: 80%;
 }
