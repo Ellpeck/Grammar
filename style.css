@@ -18,3 +18,16 @@
 #grammar-mode-info {
     display: none;
 }
+
+#cyk-table {
+    width: 80%;
+}
+#cyk-table td {
+    text-align: center;
+}
+#cyk-table .terminal-cell, #cyk-table .value-cell {
+    border: 1px solid black;
+}
+#cyk-table .terminal-cell {
+    background-color: gray;
+}

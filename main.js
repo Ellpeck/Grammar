@@ -40,6 +40,36 @@ $(function() {
             addGrammar(chomskyGrammar);
         }
     });
+    $('#parse-word').on('click', function() {
+        let grammar = getSelectedGrammar();
+        if (grammar !== null) {
+            let raw = $('#parse-raw').val();
+            let tokenized = raw.split('');
+            let N = cyk(grammar, tokenized);
+            console.log('Parsed with result:');
+            console.log(N);
+            let tokens = grammar.longSymbols ? raw.split(' +') : raw.split(''); // TODO! get this from somewhere
+
+            // build table
+            let html = '';
+            for (let i = 0; i < N.length; i++) {
+                html += '<tr>';
+                for (let j = 0; j < i; j++) {
+                    html += '<td></td>';
+                }
+                html += '<td class="terminal-cell">' + tokens[i] + '</td>';
+                for (let j = i; j < N.length; j++) {
+                    html += '<td class="value-cell">';
+                    if (j >= i) {
+                        html += '{' + Array.from(N[i][j]).join(', ') + '}';
+                    }
+                    html += '</td>';
+                }
+                html += '</tr>';
+            }
+            $('#cyk-table').html(html);
+        }
+    });
 });
 
 function addGrammar(grammar) {

@@ -71,6 +71,10 @@ class Grammar {
         return this.class;
     }
 
+    isChomsky() {
+        return this.classify().includes(CLASS_CHOMSKY);
+    }
+
     // creates a deep copy
     clone() {
         let productions = this.productions.map(prod => prod.clone());
