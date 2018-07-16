@@ -72,6 +72,22 @@ function addGrammar(grammar) {
     grammars[i] = grammar;
 
     let html = '<div class="list-group-item list-group-item-action" data-toggle="list" id=grammar-' + i + '>';
+
+    html += '<div id="grammar-header-' + i + '">';
+    html += '<div class="row">';
+
+    html += '<div class="col-md-1">'
+    html += grammar.name;
+    html += '</div>';
+
+    html += '<div class="col-md-11 cut-text">'
+    html += grammar.prodsToString(true);
+    html += '</div>';
+
+    html += '</div>';
+    html += '</div>';
+
+    html += '<div class="grammar-content" id="grammar-content-' + i + '">';
     html += '<div class="row align-items-center">'
 
     html += '<div class="col-md-11">'
@@ -100,9 +116,23 @@ function addGrammar(grammar) {
 
     html += '</div>';
     html += '</div>';
+    html += '</div>';
 
     list.append(html);
-    $('#grammar-' + i).tab('show');
+
+    let tab = $('#grammar-' + i);
+    tab.on('shown.bs.tab', function(event) {
+        let prev = event.relatedTarget;
+        if (prev !== undefined) {
+            let oldId = prev.id.replace('grammar-', '');
+            $('#grammar-header-' + oldId).show();
+            $('#grammar-content-' + oldId).hide();
+        }
+
+        $('#grammar-header-' + i).hide();
+        $('#grammar-content-' + i).show();
+    });
+    tab.tab('show');
 
     $('#grammar-remove-' + i).on('click', function() {
         removeGrammar(i);

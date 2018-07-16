@@ -1,3 +1,5 @@
+let counter = 1;
+
 class Grammar {
     constructor(productions, nonterminals, terminals, start, longSymbols) {
         this.productions = productions;
@@ -5,6 +7,7 @@ class Grammar {
         this.terminals = terminals;
         this.start = start;
         this.longSymbols = longSymbols;
+        this.name = '<strong>G<sub>' + counter++ + '</sub></strong>';
     }
 
     getProductionsFor(left) {
@@ -86,11 +89,18 @@ class Grammar {
 
     toString() {
         let text = '';
-        text += 'G = (N, T, P, ' + formatSymbol(this.start, true) + ') <em>where</em><br>';
+        text += this.name + ' = (N, T, P, ' + formatSymbol(this.start, true) + ') <em>where</em><br>';
         text += 'N = {' + this.nonterminals.map(x => formatSymbol(x, true)).join(', ') + '}<br>';
         text += 'T = {' + this.terminals.map(x => formatSymbol(x, false)).join(', ') + '}<br>';
 
-        text += 'P = {<br><span class="prod-display">';
+        text += this.prodsToString(false);
+        text += '<br>';
+
+        return text;
+    }
+
+    prodsToString(inline) {
+        let text = 'P = {' + (inline ? '' : '<br>') + '<span' + (inline ? '' : ' class="prod-display"') + '>';
         for (let i = 0; i < this.productions.length; i++) {
             let prod = this.productions[i];
 
@@ -101,9 +111,11 @@ class Grammar {
                 text += ', ';
             }
 
-            text += '<br>';
+            if (!inline) {
+                text += '<br>';
+            }
         }
-        text += '</span>}<br>';
+        text += '</span>}';
 
         return text;
     }
