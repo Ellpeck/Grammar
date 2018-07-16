@@ -39,7 +39,7 @@ function eliminateEpsilons(grammar) {
                 }
             }
         }
-    } while (!changed);
+    } while (changed);
 
     // actually remove the epsilon productions
     newGrammar.productions = prods.filter(prod => !prod.isEpsilon());
