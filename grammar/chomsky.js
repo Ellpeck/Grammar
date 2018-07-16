@@ -11,18 +11,31 @@ function eliminateEpsilons(grammar) {
     let newGrammar = grammar.clone();
     let prods = newGrammar.productions;
 
-    let changed;
     do {
         changed = false;
-        for (epsilonProd of prods) {
+        for (epsilonProd of prods.clone()) {
             if (epsilonProd.isEpsilon()) {
-                var left = epsilonProd.left;
+                let toEliminate = epsilonProd.left;
+
                 for (prod of prods) {
-                    let newRight = prod.right.filter(symbol => symbol !== left);
-                    if (newRight.length !== prod.right.length) {
-                        prod.right = newRight;
-                        changed = true;
-                    }
+                    let tryOptions = function(right, i) {
+                        if (i >= right.length) {
+                            // add new production if it does not exist!
+                            let found = prods.find(p => (p.left === prod.left && arrayEquals(p.right, right)));
+                            if (found === undefined) {
+                                prods.push(new Production(prod.left, right));
+                                changed = true;
+                            }
+                        } else {
+                            tryOptions(right, i + 1);
+                            if (right[i] === toEliminate) {
+                                let eliminatedRight = right.clone();
+                                eliminatedRight.splice(i, 1);
+                                tryOptions(eliminatedRight, i);
+                            }
+                        }
+                    };
+                    tryOptions(prod.right, 0);
                 }
             }
         }

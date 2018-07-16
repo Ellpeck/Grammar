@@ -116,7 +116,10 @@ function addGrammar(grammar) {
     html += '<br>';
 
     if (!chomsky) {
-        html += '<br><button type="button" class="btn btn-sm btn-default" id="generate-chomsky-' + i + '">Convert to Chomsky Normal Form</button>';
+        html += '<button type="button" class="btn btn-sm btn-default" id="generate-chomsky-' + i + '">Convert to Chomsky Normal Form</button> ';
+    }
+    if (grammar.containsEpsilons()) {
+        html += '<button type="button" class="btn btn-sm btn-default" id="eliminate-epsilons-' + i + '">Eliminate Epsilons</button> ';
     }
 
     html += '</div>';
@@ -180,7 +183,11 @@ function addGrammar(grammar) {
     });
 
     $('#generate-chomsky-' + i).on('click', function() {
-        addGrammar(generateChomsky(grammar));
+        addGrammar(grammar.toChomsky());
+        return false;
+    });
+    $('#eliminate-epsilons-' + i).on('click', function() {
+        addGrammar(grammar.eliminateEpsilons());
         return false;
     });
 }
