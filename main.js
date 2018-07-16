@@ -37,11 +37,10 @@ $(function() {
         let grammar = getSelectedGrammar();
         if (grammar !== null) {
             let raw = $('#parse-raw').val();
-            let tokenized = raw.split('');
-            let N = cyk(grammar, tokenized);
+            let tokens = grammar.tokenize(raw);
+            let N = cyk(grammar, tokens);
             console.log('Parsed with result:');
             console.log(N);
-            let tokens = grammar.longSymbols ? raw.split(' +') : raw.split(''); // TODO! get this from somewhere
 
             // build table
             let html = '';
