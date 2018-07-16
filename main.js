@@ -69,6 +69,7 @@ function addGrammar(grammar) {
 
     let i = getNextFreeId();
     grammars[i] = grammar;
+    let classes = grammar.classify();
 
     let html = '<div class="list-group-item list-group-item-action" data-toggle="list" id=grammar-' + i + '>';
 
@@ -79,8 +80,14 @@ function addGrammar(grammar) {
     html += grammar.name;
     html += '</div>';
 
-    html += '<div class="col-md-11 cut-text">'
+    html += '<div class="col-md-8 cut-text">'
     html += grammar.prodsToString(true);
+    html += '</div>';
+
+    html += '<div class="col-md-3">';
+    if (classes.length > 0) {
+        html += classes.map(x => fancyClassName(x, true)).join(', ');
+    }
     html += '</div>';
 
     html += '</div>';
@@ -93,9 +100,8 @@ function addGrammar(grammar) {
     html += grammar.toString();
 
     html += '<br><strong>Properties</strong><br>';
-    let classes = grammar.classify();
     if (classes.length > 0) {
-        html += '<em>' + classes.map(x => fancyClassName(x)).join('<br>') + '</em>'
+        html += '<em>' + classes.map(x => fancyClassName(x, false)).join('<br>') + '</em>'
     } else {
         html += '<em>No normal forms</em>';
     }

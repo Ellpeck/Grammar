@@ -53,16 +53,16 @@ function classify(grammar) {
     return classes;
 }
 
-function fancyClassName(name) {
+function fancyClassName(name, short) {
     switch (name) {
         case CLASS_CHOMSKY:
-            return 'Chomsky Normal Form';
+            return short ? 'CNF' : 'Chomsky Normal Form';
         case CLASS_GREIBACH:
-            return 'Greibach Normal Form';
+            return short ? 'GNF' : 'Greibach Normal Form';
         case CLASS_RIGHT_LINEAR:
-            return 'Right-Linear';
+            return short ? 'RL' : 'Right-Linear';
         case CLASS_LEFT_LINEAR:
-            return 'Left-Linear';
+            return short ? 'LL' : 'Left-Linear';
         default:
             return name;
     }
