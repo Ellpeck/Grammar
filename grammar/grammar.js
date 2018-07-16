@@ -35,6 +35,17 @@ class Grammar {
         return this.class;
     }
 
+    // whether this grammar contains epsilon rules
+    containsEpsilons() {
+        return this.productions.find(p => p.isEpsilon()) !== undefined;
+    }
+
+    // generates an equivalent grammar (except for the epsilon-word)
+    // without epsilon rules
+    eliminateEpsilons() {
+        return eliminateEpsilons(this);
+    }
+
     // checks whether this grammar is in Chomsky Normal Form
     isChomsky() {
         return this.classify().includes(CLASS_CHOMSKY);
@@ -46,7 +57,7 @@ class Grammar {
         if (this.isChomsky()) {
             return this;
         } else {
-            return chomsky(this);
+            return generateChomsky(this);
         }
     }
 
