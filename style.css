@@ -1,3 +1,7 @@
+body {
+    padding-bottom: 50px;
+}
+
 #grammar-input {
     font-family: monospace;
     min-height: 150px;
@@ -47,6 +51,10 @@
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+}
+
+#cyk {
+    display: none;
 }
 
 #cyk-table {

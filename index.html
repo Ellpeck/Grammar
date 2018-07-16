@@ -26,7 +26,7 @@
 
         <form id="grammar-form">
             <div class="form-group">
-                <label for="grammar-input">Input your Grammar:</label>
+                <label for="grammar-input"><strong>Input your Grammar:</strong></label>
                 <textarea id="grammar-input" class="form-control" placeholder="P -> aBc | d"></textarea>
                 <small class="form-text text-muted">Each production has to be on its own line. Use <strong>-></strong> as an arrow and <strong>|</strong> as an or operator. Leave the right side empty for an &epsilon; rule. The first nonterminal is the start symbol. To make any symbol be recognized as a nonterminal, place it on the left side at least once.</small>
             </div>
@@ -52,11 +52,23 @@
 
         <hr>
 
-        <div class="form-group form-group-inline">
-            <input type="text" class="form-control" id="parse-raw" value="(0)"></input>
-            <button type="button" class="btn btn-sm btn-default" id="parse-word">Parse word</button>
+        <label for="cyk-input"><strong>Parse a word using the CYK algorithm:</strong></label>
+        <small class="form-text text-muted" id="cyk-info"><em>Select a grammar in <strong>Chomsky Normal Form</strong> to parse words.</em></small>
+        <div id="cyk">
+            <form id="cyk-form">
+                <div class="form-group">
+                    <input id="cyk-input" class="form-control"></input>
+                    <small class="form-text text-muted">Input a word to generate a <strong>CYK table</strong> that determines if the word is derivable or not.</small>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-sm-12">
+                        <button type="submit" class="btn btn-default float-right">Parse</button>
+                    </div>
+                </div>
+            </form>
         </div>
 
+        <span id="cyk-output"></span>
         <table id="cyk-table"></table>
     </div>
 </body>

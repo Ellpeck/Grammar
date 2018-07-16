@@ -35,10 +35,12 @@ $(function() {
         }
     });
 
-    $('#parse-word').on('click', function() {
+    $('#cyk-form').on('submit', function(e) {
+        e.preventDefault();
+
         let grammar = getSelectedGrammar();
         if (grammar !== null) {
-            let raw = $('#parse-raw').val();
+            let raw = $('#cyk-input').val();
             let tokens = grammar.tokenize(raw);
             let N = cyk(grammar, tokens);
             console.log('Parsed with result:');
@@ -62,6 +64,8 @@ $(function() {
                 html += '</tr>';
             }
             $('#cyk-table').html(html);
+
+            $('#cyk-output').html('CYK Output of <em>' + raw + '</em> for grammar ' + grammar.name + ':');
         }
     });
 });
@@ -72,6 +76,7 @@ function addGrammar(grammar) {
     let i = getNextFreeId();
     grammars[i] = grammar;
     let classes = grammar.classify();
+    let chomsky = grammar.isChomsky();
 
     let html = '<div class="list-group-item list-group-item-action" data-toggle="list" id=grammar-' + i + '>';
 
@@ -110,7 +115,7 @@ function addGrammar(grammar) {
 
     html += '<br>';
 
-    if (!grammar.isChomsky()) {
+    if (!chomsky) {
         html += '<br><button type="button" class="btn btn-sm btn-default" id="generate-chomsky-' + i + '">Convert to Chomsky Normal Form</button>';
     }
 
@@ -127,7 +132,10 @@ function addGrammar(grammar) {
 
     list.append(html);
 
+    let cyk = $('#cyk');
+    let cykInfo = $('#cyk-info');
     let tab = $('#grammar-' + i);
+
     tab.on('shown.bs.tab', function(event) {
         let prev = event.relatedTarget;
         if (prev !== undefined) {
@@ -138,11 +146,24 @@ function addGrammar(grammar) {
 
         $('#grammar-header-' + i).hide();
         $('#grammar-content-' + i).show();
+
+        if (chomsky) {
+            cyk.show();
+            cykInfo.hide();
+        }
+    });
+    tab.on('hidden.bs.tab', function() {
+        cyk.hide();
+        cykInfo.show();
     });
     tab.tab('show');
 
     $('#grammar-remove-' + i).on('click', function() {
         removeGrammar(i);
+
+        cyk.hide();
+        cykInfo.show();
+
         return false;
     });
 
