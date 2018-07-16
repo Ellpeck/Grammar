@@ -33,13 +33,6 @@ $(function() {
         }
     });
 
-    $('#generate-chomsky').on('click', function() {
-        let grammar = getSelectedGrammar();
-        if (grammar !== null) {
-            let chomskyGrammar = generateChomsky(grammar);
-            addGrammar(chomskyGrammar);
-        }
-    });
     $('#parse-word').on('click', function() {
         let grammar = getSelectedGrammar();
         if (grammar !== null) {
@@ -82,15 +75,22 @@ function addGrammar(grammar) {
     html += '<div class="row align-items-center">'
 
     html += '<div class="col-md-11">'
-    html += grammars[i].toString();
+    html += grammar.toString();
 
     html += '<br><strong>Properties</strong><br>';
-    let classes = grammars[i].classify();
+    let classes = grammar.classify();
     if (classes.length > 0) {
         html += '<em>' + classes.map(x => fancyClassName(x)).join('<br>') + '</em>'
     } else {
         html += '<em>No normal forms</em>';
     }
+
+    html += '<br>';
+
+    if (!grammar.isChomsky()) {
+        html += '<br><button type="button" class="btn btn-sm btn-default" id="generate-chomsky-' + i + '">Convert to Chomsky Normal Form</button>';
+    }
+
     html += '</div>';
 
     html += '<div class="col-md-1">'
@@ -111,14 +111,19 @@ function addGrammar(grammar) {
 
     $('#grammar-copy-' + i).on('click', function() {
         let text = '';
-        for (prod of grammars[i].productions) {
+        for (prod of grammar.productions) {
             text += prod.left + ' \u2192 ' + prod.right.join(' ') + '\n';
         }
         $('#grammar-input').val(text);
 
         let box = $('#grammar-mode');
-        box.prop('checked', grammars[i].longSymbols);
+        box.prop('checked', grammar.longSymbols);
         box.trigger('change');
+    });
+
+    $('#generate-chomsky-' + i).on('click', function() {
+        addGrammar(generateChomsky(grammar));
+        return false;
     });
 }
 
