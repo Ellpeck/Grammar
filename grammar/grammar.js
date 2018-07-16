@@ -189,6 +189,8 @@ function addPart(grammar, rightArray, left, part) {
 }
 
 function parseNonterminals(grammar, lines, longNames) {
+    let hasStart = false;
+
     for (line of lines) {
         if (line.length > 0) {
             let parts = makeParts(line);
@@ -196,12 +198,17 @@ function parseNonterminals(grammar, lines, longNames) {
 
             if (grammar.start === undefined) {
                 grammar.start = left;
+                hasStart = true;
             }
 
             if (!grammar.nonterminals.includes(left)) {
                 grammar.nonterminals.push(left);
             }
         }
+    }
+
+    if (!hasStart) {
+        throw 'No start symbol found, input at least one production';
     }
 }
 

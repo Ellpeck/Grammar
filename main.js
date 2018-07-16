@@ -18,6 +18,8 @@ $(function() {
         } catch (e) {
             alert.html(e);
             alert.show();
+
+            console.log(e);
         }
     });
 
