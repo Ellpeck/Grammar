@@ -1,3 +1,5 @@
+// Takes an array of terminals and generates the CYK table
+// for a given grammar in CNF
 function cyk(grammar, word) {
     if (!grammar.isChomsky()) {
         throw 'Grammar must be in Chomsky normal form';
