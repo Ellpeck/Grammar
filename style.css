@@ -29,9 +29,21 @@ body {
     border-color: #b5bfff;
 }
 
+.nonterm, .term {
+    font-family: monospace;
+}
+
 .nonterm {
     color: #0f17ff;
     font-weight: bold;
+}
+
+.term {
+}
+
+.emptyset {
+    font-size: 80%;
+    color: #808182;
 }
 
 .prod-display {
@@ -59,6 +71,10 @@ body {
 
 #cyk-table {
     width: 80%;
+    margin: 15px;
+    margin-left: auto;
+    margin-right: auto;
+    table-layout: fixed;
 }
 
 #cyk-table td {
@@ -70,5 +86,5 @@ body {
 }
 
 #cyk-table .terminal-cell {
-    background-color: gray;
+    background-color: #c3d6f4;
 }

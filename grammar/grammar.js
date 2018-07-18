@@ -128,6 +128,7 @@ class Grammar {
 function formatSymbol(x, isNonterm) {
     let result;
 
+    // subscript text after underscore
     if (x.length >= 3) {
         let subs = '';
 
@@ -142,10 +143,8 @@ function formatSymbol(x, isNonterm) {
         result = x;
     }
 
-    if (isNonterm) {
-        result = '<span class="nonterm">' + result + '</span>';
-    }
-    return result;
+    let classes = isNonterm ? 'nonterm' : 'term';
+    return '<span class="' + classes + '">' + result + '</span>';
 }
 
 function parseGrammar(text, longNames) {

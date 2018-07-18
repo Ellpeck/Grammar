@@ -53,11 +53,15 @@ $(function() {
                 for (let j = 0; j < i; j++) {
                     html += '<td></td>';
                 }
-                html += '<td class="terminal-cell">' + tokens[i] + '</td>';
+                html += '<td class="terminal-cell">' + formatSymbol(tokens[i], false) + '</td>';
                 for (let j = i; j < N.length; j++) {
                     html += '<td class="value-cell">';
                     if (j >= i) {
-                        html += '{' + Array.from(N[i][j]).join(', ') + '}';
+                        if (N[i][j].size === 0) {
+                            html += '<span class="emptyset">&empty;</span>';
+                        } else {
+                            html += '{' + Array.from(N[i][j]).map(x => formatSymbol(x, true)).join(', ') + '}';
+                        }
                     }
                     html += '</td>';
                 }
