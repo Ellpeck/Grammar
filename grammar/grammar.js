@@ -42,10 +42,32 @@ class Grammar {
         return this.productions.find(p => p.isEpsilon()) !== undefined;
     }
 
+    // whether this grammar contains rules mapping one nonterminal to exactly one
+    // other nonterminal
+    containsDirectRules() {
+        return this.productions.find(p => p.right.length == 1 && this.isNonterminal(p.right[0])) !== undefined;
+    }
+
+    // whether this grammar contains rules with length longer than two
+    containsLongRules() {
+        return this.productions.find(p => p.right.length > 2) !== undefined;
+    }
+
     // generates an equivalent grammar (except for the epsilon-word)
     // without epsilon rules
     eliminateEpsilons() {
         return eliminateEpsilons(this);
+    }
+
+    // generates an equivalent grammar without direct rules
+    eliminateDirectRules() {
+        return eliminateDirectRules(this);
+    }
+
+    // generates an equivalent grammar by replacing all long rules with multiple
+    // rules of length 2
+    eliminateLongRules() {
+        return eliminateLongRules(this);
     }
 
     // checks whether this grammar is in Chomsky Normal Form

@@ -130,6 +130,12 @@ function addGrammar(grammar) {
     if (grammar.containsEpsilons()) {
         html += '<button type="button" class="btn btn-sm btn-default" id="eliminate-epsilons-' + i + '">Eliminate Epsilons</button> ';
     }
+    if (grammar.containsDirectRules()) {
+        html += '<button type="button" class="btn btn-sm btn-default" id="eliminate-directs-' + i + '">Eliminate Direct Rules</button> ';
+    }
+    if (grammar.containsLongRules()) {
+        html += '<button type="button" class="btn btn-sm btn-default" id="eliminate-longs-' + i + '">Eliminate Long Rules</button> ';
+    }
 
     html += '</div>';
 
@@ -197,6 +203,14 @@ function addGrammar(grammar) {
     });
     $('#eliminate-epsilons-' + i).on('click', function() {
         addGrammar(grammar.eliminateEpsilons());
+        return false;
+    });
+    $('#eliminate-directs-' + i).on('click', function() {
+        addGrammar(grammar.eliminateDirectRules());
+        return false;
+    });
+    $('#eliminate-longs-' + i).on('click', function() {
+        addGrammar(grammar.eliminateLongRules());
         return false;
     });
 }

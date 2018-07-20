@@ -2,7 +2,7 @@ function generateChomsky(grammar) {
     grammar = eliminateEpsilons(grammar);
     grammar = bloatTerminals(grammar);
     grammar = eliminateDirectRules(grammar);
-    grammar = reduceRuleLength(grammar);
+    grammar = eliminateLongRules(grammar);
     return grammar;
 }
 
@@ -98,7 +98,7 @@ function eliminateDirectRules(grammar) {
 }
 
 // split all rules with more than two right side symbols into chain of two symbols
-function reduceRuleLength(grammar) {
+function eliminateLongRules(grammar) {
     let newProds = new Array();
     let newNonterminals = grammar.nonterminals.clone();
     for (prod of grammar.productions) {
