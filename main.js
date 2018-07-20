@@ -187,7 +187,7 @@ function addGrammar(grammar) {
         $('#grammar-input').val(text);
 
         let box = $('#grammar-mode');
-        box.prop('checked', grammar.longSymbols);
+        box.prop('checked', grammar.longNonterminals);
         box.trigger('change');
     });
 

@@ -1,12 +1,14 @@
 let counter = 1;
 
 class Grammar {
-    constructor(productions, nonterminals, terminals, start, longSymbols) {
+    constructor(productions, nonterminals, terminals, start, longNonterminals, longTerminals) {
         this.productions = productions;
         this.nonterminals = nonterminals;
         this.terminals = terminals;
         this.start = start;
-        this.longSymbols = longSymbols;
+
+        this.longNonterminals = longNonterminals;
+        this.longTerminals = longTerminals;
         this.name = '<strong>G<sub>' + counter++ + '</sub></strong>';
     }
 
@@ -63,7 +65,7 @@ class Grammar {
 
     // takes a given input string and turns it into an array of non-terminals
     tokenize(raw) {
-        if (this.longSymbols) {
+        if (this.longTerminals) {
             return raw.split(/ +/);
         } else {
             return raw.split('');
@@ -88,7 +90,7 @@ class Grammar {
         let productions = this.productions.map(prod => prod.clone());
         let nonterminals = this.nonterminals.clone();
         let terminals = this.terminals.clone();
-        return new Grammar(productions, nonterminals, terminals, this.start, this.longSymbols);
+        return new Grammar(productions, nonterminals, terminals, this.start, this.longNonterminals, this.longTerminals);
     }
 
     toString() {
@@ -148,7 +150,7 @@ function formatSymbol(x, isNonterm) {
 }
 
 function parseGrammar(text, longNames) {
-    let grammar = new Grammar(new Array(), new Array(), new Array(), undefined, longNames);
+    let grammar = new Grammar(new Array(), new Array(), new Array(), undefined, longNames, longNames);
 
     let lines = text.split('\n');
     parseNonterminals(grammar, lines, longNames);

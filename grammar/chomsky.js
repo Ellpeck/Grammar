@@ -61,7 +61,7 @@ function bloatTerminals(grammar) {
         }
         newGrammar.productions.push(new Production(nonterminal, [terminal]));
         newGrammar.nonterminals.push(nonterminal);
-        newGrammar.longSymbols = true;
+        newGrammar.longNonterminals = true;
     }
 
     return newGrammar;
@@ -94,7 +94,7 @@ function eliminateDirectRules(grammar) {
         }
     }
 
-    return new Grammar(newProds, grammar.nonterminals.clone(), grammar.terminals.clone(), grammar.start);
+    return new Grammar(newProds, grammar.nonterminals.clone(), grammar.terminals.clone(), grammar.start, grammar.longNonterminals, grammar.longTerminals);
 }
 
 // split all rules with more than two right side symbols into chain of two symbols
@@ -125,5 +125,5 @@ function reduceRuleLength(grammar) {
         }
     }
 
-    return new Grammar(newProds, newNonterminals, grammar.terminals.clone(), grammar.start, true);
+    return new Grammar(newProds, newNonterminals, grammar.terminals.clone(), grammar.start, true, grammar.longTerminals);
 }
