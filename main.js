@@ -70,7 +70,9 @@ $(function() {
             $('#cyk-table').html(html);
 
             $('#cyk-before').html('CYK Output of <span class="word">' + raw + '</span> for grammar ' + grammar.name + ':');
-            if (N[0][tokens.length - 1].has(grammar.start)) {
+            if (tokens.length === 0) {
+                $('#cyk-after').html('Grammars in Chomsky Normal form cannot derive the <span class="word">&epsilon;</span>-word.');
+            } else if (N[0][tokens.length - 1].has(grammar.start)) {
                 $('#cyk-after').html('As the parsed word is derivable by the start symbol ' + formatSymbol(grammar.start, true) + ', the word <span class="word">' + raw + '</span> is part of the language.');
             } else {
                 $('#cyk-after').html('As the parsed word is <em>not</em> derivable by the start symbol ' + formatSymbol(grammar.start, true) + ', the word <span class="word">' + raw + '</span> is <em>not</em> part of the language.');
@@ -79,7 +81,7 @@ $(function() {
     });
 });
 
-function addGrammar(grammar) {
+function addGrammar(grammar, ) {
     let list = $('#grammars');
 
     let i = getNextFreeId();
@@ -124,11 +126,21 @@ function addGrammar(grammar) {
 
     html += '<br>';
 
+    let includesEpsilonWord = grammar.includesEpsilonWord();
+
     if (!chomsky) {
-        html += '<button type="button" class="btn btn-sm btn-default" id="generate-chomsky-' + i + '">Convert to Chomsky Normal Form</button> ';
+        if (includesEpsilonWord) {
+            html += '<button type="button" class="btn btn-sm btn-default" id="generate-chomsky-' + i + '" title="Warning: This will remove the &epsilon;-word from the generated language!">Convert to Chomsky Normal Form &lt;!&gt;</button> ';
+        } else {
+            html += '<button type="button" class="btn btn-sm btn-default" id="generate-chomsky-' + i + '">Convert to Chomsky Normal Form</button> ';
+        }
     }
-    if (grammar.containsEpsilons()) {
-        html += '<button type="button" class="btn btn-sm btn-default" id="eliminate-epsilons-' + i + '">Eliminate Epsilons</button> ';
+    if (grammar.containsEpsilonRules()) {
+        if (includesEpsilonWord) {
+            html += '<button type="button" class="btn btn-sm btn-default" id="eliminate-epsilons-' + i + '" title="Warning: This will remove the &epsilon;-word from the generated language!">Eliminate Epsilon Rules &lt;!&gt;</button> ';
+        } else {
+            html += '<button type="button" class="btn btn-sm btn-default" id="eliminate-epsilons-' + i + '">Eliminate Epsilon Rules</button> ';
+        }
     }
     if (grammar.containsDirectRules()) {
         html += '<button type="button" class="btn btn-sm btn-default" id="eliminate-directs-' + i + '">Eliminate Direct Rules</button> ';
@@ -202,7 +214,7 @@ function addGrammar(grammar) {
         return false;
     });
     $('#eliminate-epsilons-' + i).on('click', function() {
-        addGrammar(grammar.eliminateEpsilons());
+        addGrammar(grammar.eliminateEpsilonRules());
         return false;
     });
     $('#eliminate-directs-' + i).on('click', function() {
