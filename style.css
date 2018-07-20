@@ -29,7 +29,7 @@ body {
     border-color: #b5bfff;
 }
 
-.nonterm, .term {
+.nonterm, .term, .word {
     font-family: monospace;
 }
 
@@ -38,7 +38,7 @@ body {
     font-weight: bold;
 }
 
-.term {
+.term, .word {
 }
 
 .emptyset {

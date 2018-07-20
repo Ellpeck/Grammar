@@ -69,7 +69,12 @@ $(function() {
             }
             $('#cyk-table').html(html);
 
-            $('#cyk-output').html('CYK Output of <em>' + raw + '</em> for grammar ' + grammar.name + ':');
+            $('#cyk-before').html('CYK Output of <span class="word">' + raw + '</span> for grammar ' + grammar.name + ':');
+            if (N[0][tokens.length - 1].has(grammar.start)) {
+                $('#cyk-after').html('As the parsed word is derivable by the start symbol ' + formatSymbol(grammar.start, true) + ', the word <span class="word">' + raw + '</span> is part of the language.');
+            } else {
+                $('#cyk-after').html('As the parsed word is <em>not</em> derivable by the start symbol ' + formatSymbol(grammar.start, true) + ', the word <span class="word">' + raw + '</span> is <em>not</em> part of the language.');
+            }
         }
     });
 });
