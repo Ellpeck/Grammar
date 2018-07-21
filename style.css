@@ -88,3 +88,22 @@ body {
 #cyk-table .terminal-cell {
     background-color: #c3d6f4;
 }
+
+#cyk-table .terminal-cell.selected {
+    background-color: #345282;
+    color: #ffffff;
+}
+
+#cyk-table .value-cell.selected {
+    background-color: #edd5b6;
+}
+
+#cyk-table .value-cell.selected-0 {
+    background-color: #d1d1d1;
+}
+#cyk-table .value-cell.selected-1 {
+    background-color: #eaeaea;
+}
+#cyk-table .value-cell.selected-2 {
+    background-color: #e0e0e0;
+}

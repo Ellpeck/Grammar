@@ -53,9 +53,9 @@ $(function() {
                 for (let j = 0; j < i; j++) {
                     html += '<td></td>';
                 }
-                html += '<td class="terminal-cell">' + formatSymbol(tokens[i], false) + '</td>';
+                html += '<td id="terminal-cell-' + i + '" class="terminal-cell">' + formatSymbol(tokens[i], false) + '</td>';
                 for (let j = i; j < N.length; j++) {
-                    html += '<td class="value-cell">';
+                    html += '<td id="value-cell-' + i + '-' + j + '" class="value-cell" data-i="' + i + '" data-j="' + j + '">';
                     if (j >= i) {
                         if (N[i][j].size === 0) {
                             html += '<span class="emptyset">&empty;</span>';
@@ -77,6 +77,38 @@ $(function() {
             } else {
                 $('#cyk-after').html('As the parsed word is <em>not</em> derivable by the start symbol ' + formatSymbol(grammar.start, true) + ', the word <span class="word">' + raw + '</span> is <em>not</em> part of the language.');
             }
+        }
+    });
+
+    // how many different selection shades to use
+    let variantMax = 2;
+
+    $('#cyk-table').on('mouseenter', '.value-cell', function() {
+        var i = $(this).data('i');
+        var j = $(this).data('j');
+        $(this).addClass('selected');
+        var variant = 0;
+        for (let k = i; k < j; k++) {
+            $('#cyk-table #value-cell-' +     i + '-' + k).addClass('selected-' + variant);
+            $('#cyk-table #value-cell-' + (k+1) + '-' + j).addClass('selected-' + variant);
+            variant = (variant + 1) % variantMax;
+        }
+        for (let k = i; k <= j; k++) {
+            $('#cyk-table #terminal-cell-' + k).addClass('selected');
+        }
+    });
+    $('#cyk-table').on('mouseleave', '.value-cell', function() {
+        var i = $(this).data('i');
+        var j = $(this).data('j');
+        $(this).removeClass('selected');
+        var variant = 0;
+        for (let k = i; k < j; k++) {
+            $('#cyk-table #value-cell-' +     i + '-' + k).removeClass('selected-' + variant);
+            $('#cyk-table #value-cell-' + (k+1) + '-' + j).removeClass('selected-' + variant);
+            variant = (variant + 1) % variantMax;
+        }
+        for (let k = i; k <= j; k++) {
+            $('#cyk-table #terminal-cell-' + k).removeClass('selected');
         }
     });
 });
