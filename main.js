@@ -1,6 +1,14 @@
 const grammars = new Array();
 
 $(function() {
+    let cookie = getCookieData();
+    if (cookie.length > 0) {
+        let json = JSON.parse(cookie);
+        for (grammar of json) {
+            addGrammar(grammarFromJson(grammar));
+        }
+    }
+
     let field = $('#grammar-input');
     let alert = $('#grammar-alert');
     let box = $('#grammar-mode');
@@ -89,8 +97,8 @@ $(function() {
         $(this).addClass('selected');
         var variant = 0;
         for (let k = i; k < j; k++) {
-            $('#cyk-table #value-cell-' +     i + '-' + k).addClass('selected-' + variant);
-            $('#cyk-table #value-cell-' + (k+1) + '-' + j).addClass('selected-' + variant);
+            $('#cyk-table #value-cell-' + i + '-' + k).addClass('selected-' + variant);
+            $('#cyk-table #value-cell-' + (k + 1) + '-' + j).addClass('selected-' + variant);
             variant = (variant + 1) % variantMax;
         }
         for (let k = i; k <= j; k++) {
@@ -103,13 +111,17 @@ $(function() {
         $(this).removeClass('selected');
         var variant = 0;
         for (let k = i; k < j; k++) {
-            $('#cyk-table #value-cell-' +     i + '-' + k).removeClass('selected-' + variant);
-            $('#cyk-table #value-cell-' + (k+1) + '-' + j).removeClass('selected-' + variant);
+            $('#cyk-table #value-cell-' + i + '-' + k).removeClass('selected-' + variant);
+            $('#cyk-table #value-cell-' + (k + 1) + '-' + j).removeClass('selected-' + variant);
             variant = (variant + 1) % variantMax;
         }
         for (let k = i; k <= j; k++) {
             $('#cyk-table #terminal-cell-' + k).removeClass('selected');
         }
+    });
+
+    $(window).on('unload', function() {
+        setCookieData(JSON.stringify(grammars.filter(x => x !== null)), 1);
     });
 });
 

@@ -1,5 +1,3 @@
-let counter = 1;
-
 class Grammar {
     constructor(productions, nonterminals, terminals, start, longNonterminals, longTerminals, explanation) {
         this.productions = productions;
@@ -9,7 +7,7 @@ class Grammar {
 
         this.longNonterminals = longNonterminals;
         this.longTerminals = longTerminals;
-        this.name = '<strong>G<sub>' + counter++ + '</sub></strong>';
+        this.name = '<strong>G</strong>';
         this.explanation = explanation;
     }
 
@@ -154,6 +152,17 @@ class Grammar {
 
         return text;
     }
+}
+
+function grammarFromJson(data) {
+    let prods = new Array();
+    for (let prod of data['productions']) {
+        prods.push(productionFromJson(prod));
+    }
+
+    let grammar = new Grammar(prods, data['nonterminals'], data['terminals'], data['start'], data['longNonterminals'], data['longTerminals']);
+    grammar.name = data['name'];
+    return grammar;
 }
 
 function formatSymbol(x, isNonterm) {

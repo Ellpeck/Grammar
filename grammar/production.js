@@ -16,3 +16,7 @@ class Production {
         return new Production(this.left, this.right.clone());
     }
 }
+
+function productionFromJson(json) {
+    return new Production(json['left'], json['right']);
+}
