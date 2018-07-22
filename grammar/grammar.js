@@ -1,7 +1,7 @@
 let counter = 1;
 
 class Grammar {
-    constructor(productions, nonterminals, terminals, start, longNonterminals, longTerminals) {
+    constructor(productions, nonterminals, terminals, start, longNonterminals, longTerminals, explanation) {
         this.productions = productions;
         this.nonterminals = nonterminals;
         this.terminals = terminals;
@@ -10,6 +10,7 @@ class Grammar {
         this.longNonterminals = longNonterminals;
         this.longTerminals = longTerminals;
         this.name = '<strong>G<sub>' + counter++ + '</sub></strong>';
+        this.explanation = explanation;
     }
 
     // finds all productions that derive a given non-terminal
@@ -116,12 +117,12 @@ class Grammar {
         }
     }
 
-    // creates a deep copy
+    // creates a deep copy, without name + explanation
     clone() {
         let productions = this.productions.map(prod => prod.clone());
         let nonterminals = this.nonterminals.clone();
         let terminals = this.terminals.clone();
-        return new Grammar(productions, nonterminals, terminals, this.start, this.longNonterminals, this.longTerminals);
+        return new Grammar(productions, nonterminals, terminals, this.start, this.longNonterminals, this.longTerminals, undefined);
     }
 
     toString() {

@@ -113,7 +113,7 @@ $(function() {
     });
 });
 
-function addGrammar(grammar, ) {
+function addGrammar(grammar) {
     let list = $('#grammars');
 
     let i = getNextFreeId();
@@ -144,9 +144,12 @@ function addGrammar(grammar, ) {
     html += '</div>';
 
     html += '<div class="grammar-content" id="grammar-content-' + i + '">';
-    html += '<div class="row align-items-center">'
+    html += '<div class="row align-items-center">';
 
-    html += '<div class="col-md-11">'
+    html += '<div class="col-md-11">';
+    if (grammar.explanation) {
+        html += '<p><a id="explain-grammar-' + i + '" href="#">This grammar was generated. Check explanation!</a></p>';
+    }
     html += grammar.toString();
 
     html += '<br><strong>Properties</strong><br>';
@@ -240,6 +243,18 @@ function addGrammar(grammar, ) {
         box.prop('checked', grammar.longNonterminals);
         box.trigger('change');
     });
+    if (grammar.explanation) {
+        $('#explain-grammar-' + i).on('click', function() {
+            $('#explanation-modal').modal('show');
+            $('#explanation-modal-title').html('Grammar algorithm explanation');
+            let body = grammar.explanation;
+            body += '<hr>';
+            body += '<p>The resulting grammar ' + grammar.name + ' is the following:</p>';
+            body += grammar.toString();
+            $('#explanation-modal-body').html(body);
+            return false;
+        });
+    }
 
     $('#generate-chomsky-' + i).on('click', function() {
         addGrammar(grammar.toChomsky());

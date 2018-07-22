@@ -1,13 +1,22 @@
 function generateChomsky(grammar) {
+    let out = '<ol>';
     grammar = eliminateEpsilonRules(grammar);
+    out += '<li><h3>Eliminate &epsilon;-rules</h3>' + grammar.explanation + '</li>';
     grammar = bloatTerminals(grammar);
+    out += '<li><h3>Replace terminals with nonterminals</h3>' + grammar.explanation + '</li>';
     grammar = eliminateDirectRules(grammar);
+    out += '<li><h3>Eliminate direct rules</h3>' + grammar.explanation + '</li>';
     grammar = eliminateLongRules(grammar);
+    out += '<li><h3>Eliminate long rules</h3>' + grammar.explanation + '</li>';
+    out += '</ol>';
+    grammar.explanation = out;
     return grammar;
 }
 
 // remove all epsilon rules
 function eliminateEpsilonRules(grammar) {
+    let out = '<p class="intro">We eliminate all rules of the form A &rarr; &epsilon;.</p>';
+
     let newGrammar = grammar.clone();
     let prods = newGrammar.productions;
 
@@ -43,11 +52,17 @@ function eliminateEpsilonRules(grammar) {
 
     // actually remove the epsilon productions
     newGrammar.productions = prods.filter(prod => !prod.isEpsilon());
+
+    newGrammar.explanation = out;
     return newGrammar;
 }
 
 // converts all terminals into CNF nonterminals
 function bloatTerminals(grammar) {
+    let out = '<p class="intro">For every terminal x in our grammar, add a new nonterminal T<sub>x</sub>. '
+            + 'Then iterate through all rules and replace x with T<sub>x</sub>. '
+            + 'Finally, add the production T<sub>x</sub> &rarr; x.</p>';
+
     let newGrammar = grammar.clone();
 
     for (terminal of newGrammar.terminals) {
@@ -64,14 +79,23 @@ function bloatTerminals(grammar) {
         newGrammar.longNonterminals = true;
     }
 
+    out += '<p>This results in the following grammar:</p>';
+    out += newGrammar.toString();
+    newGrammar.explanation = out;
     return newGrammar;
 }
 
 // eliminates all rules of the form A -> B where A, B are nonterminals
 function eliminateDirectRules(grammar) {
+    let out = '<p class="intro">We want to eliminate all direct rules of the form A &rarr; B where A, B are nonterminals. '
+            + 'This is done by constructing a reachability graph for each nonterminal symbol. We then start with an empty rule set and add a new rule for every leaf that is reachable from a nonterminal on this graph.</p>';
+
     let newProds = new Array();
 
     for (nonterminal of grammar.nonterminals) {
+        let reachableStrings = new Array(); // @out
+        let reachableProds = new Array(); // @out
+
         // implement DFS
         let seen = new Set();
         let toVisit = new Set();
@@ -88,21 +112,38 @@ function eliminateDirectRules(grammar) {
                         toVisit.add(right);
                     }
                 } else {
-                    newProds.push(new Production(nonterminal, prod.right));
+                    let newProd = new Production(nonterminal, prod.right);
+                    newProds.push(newProd);
+
+                    reachableStrings.push(prod.right); // @out
+                    reachableProds.push(newProd); // @out
                 }
             }
         }
+
+        out += '<p>For the nonterminal ' + formatSymbol(nonterminal, true) + ', we can reach the leaves ';
+        out += reachableStrings.map(str => str.map(x => formatSymbol(x, grammar.isNonterminal(x))).join(' ')).join(', ');
+        out += '; therefore we add the rules ';
+        out += reachableProds.map(prod => formatProduction(prod, grammar)).join(', ');
+        out += ' to our grammar.'
     }
 
-    return new Grammar(newProds, grammar.nonterminals.clone(), grammar.terminals.clone(), grammar.start, grammar.longNonterminals, grammar.longTerminals);
+    return new Grammar(newProds, grammar.nonterminals.clone(), grammar.terminals.clone(), grammar.start, grammar.longNonterminals, grammar.longTerminals, out);
 }
 
 // split all rules with more than two right side symbols into chain of two symbols
 function eliminateLongRules(grammar) {
+    let out = '<p class="intro">We replace all rules of the form A &rarr; B<sub>0</sub>B<sub>1</sub>...B<sub>n</sub>, n > 2, '
+            +'with separate rules A &rarr; B<sub>0</sub>A<sub>0</sub>, A<sub>0</sub> &rarr; B<sub>1</sub>A<sub>1</sub>, ..., A<sub>n-1</sub> &rarr; B<sub>n-1</sub>B<sub>n</sub>.</p>';
+    out += '<p>The following rules are too long and must be replaced:</p>';
+
     let newProds = new Array();
     let newNonterminals = grammar.nonterminals.clone();
     for (prod of grammar.productions) {
         if (prod.right.length > 2) {
+            let newProdsForThisProd = new Array(); // @out
+            let newNonterminalsForThisProd = new Array(); // @out
+
             let left = prod.left;
             let right = prod.right;
             let lastSymbol = prod.left;
@@ -117,15 +158,22 @@ function eliminateLongRules(grammar) {
                         lastSymbol += '\'';
                     }
                     newNonterminals.push(lastSymbol);
+                    newNonterminalsForThisProd.push(lastSymbol);
                 }
-                newProds.push(new Production(beforeSymbol, [right[i], lastSymbol]));
+                let newProd = new Production(beforeSymbol, [right[i], lastSymbol]);
+                newProds.push(newProd);
+                newProdsForThisProd.push(newProd); // @out
             }
+
+            out += '<p><strong>Eliminate ' + formatProduction(prod, grammar) + '</strong> by adding rules '
+                    + newProdsForThisProd.map(prod => formatProduction(prod, grammar)).join(', ')
+                    + ' and new nonterminals ' + newNonterminalsForThisProd.map(prod => formatSymbol(prod, true)).join(', ') + '.</p>';
         } else {
             newProds.push(prod.clone());
         }
     }
 
-    return new Grammar(newProds, newNonterminals, grammar.terminals.clone(), grammar.start, true, grammar.longTerminals);
+    return new Grammar(newProds, newNonterminals, grammar.terminals.clone(), grammar.start, true, grammar.longTerminals, out);
 }
 
 // determines whether the language generated by a given grammar can derive
