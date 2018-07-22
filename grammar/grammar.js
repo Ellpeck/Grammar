@@ -208,7 +208,7 @@ function parseProductions(grammar, lines, longNames) {
             if (longNames) {
                 let split = right.split(' ');
                 for (let i = 0; i < split.length; i++) {
-                    let part = split[i];
+                    let part = split[i].trim();
                     rightArray = addPart(grammar, rightArray, left, part);
                 }
             } else {
@@ -224,7 +224,7 @@ function parseProductions(grammar, lines, longNames) {
 }
 
 function addPart(grammar, rightArray, left, part) {
-    if (part !== ' ') {
+    if (part.length > 0 && part !== ' ') {
         if (part === '|') {
             grammar.productions.push(new Production(left, rightArray));
             rightArray = new Array();
