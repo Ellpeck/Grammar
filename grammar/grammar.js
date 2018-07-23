@@ -123,13 +123,13 @@ class Grammar {
         return new Grammar(productions, nonterminals, terminals, this.start, this.longNonterminals, this.longTerminals, undefined);
     }
 
-    toString() {
+    toString(inline) {
         let text = '';
         text += this.name + ' = (N, T, P, ' + formatSymbol(this.start, true) + ') <em>where</em><br>';
         text += 'N = {' + this.nonterminals.map(x => formatSymbol(x, true)).join(', ') + '}<br>';
         text += 'T = {' + this.terminals.map(x => formatSymbol(x, false)).join(', ') + '}<br>';
 
-        text += this.prodsToString(false);
+        text += this.prodsToString(inline);
         text += '<br>';
 
         return text;
@@ -163,38 +163,6 @@ function grammarFromJson(data) {
     let grammar = new Grammar(prods, data['nonterminals'], data['terminals'], data['start'], data['longNonterminals'], data['longTerminals'], data['explanation']);
     grammar.name = data['name'];
     return grammar;
-}
-
-function formatSymbol(x, isNonterm) {
-    let result;
-
-    // subscript text after underscore
-    if (x.length >= 3) {
-        let subs = '';
-
-        let split = x.split('_');
-        result = split[0];
-        for (let i = 1; i < split.length; i++) {
-            result += '<sub>' + split[i];
-            subs += '</sub>';
-        }
-        result += subs;
-    } else {
-        result = x;
-    }
-
-    let classes = isNonterm ? 'nonterm' : 'term';
-    return '<span class="' + classes + '">' + result + '</span>';
-}
-
-function formatProduction(prod, grammar) {
-    let right;
-    if (prod.right.length === 0) {
-        right = '&epsilon;';
-    } else {
-        right = prod.right.map(x => formatSymbol(x, grammar.isNonterminal(x))).join(' ');
-    }
-    return formatSymbol(prod.left, true) + ' &rarr; ' + right;
 }
 
 function parseGrammar(text, longNames) {

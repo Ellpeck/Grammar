@@ -3,9 +3,7 @@ const grammars = new Array();
 $(function() {
     let cookie = getLocalStorage('grammar-data');
     if (cookie && cookie.length > 0) {
-        console.log(cookie);
         let json = JSON.parse(cookie);
-        console.log(json);
         for (grammar of json) {
             addGrammar(grammarFromJson(grammar));
         }

@@ -15,7 +15,7 @@ function generateChomsky(grammar) {
 
 // remove all epsilon rules
 function eliminateEpsilonRules(grammar) {
-    let out = '<p class="intro">We eliminate all rules of the form A &rarr; &epsilon;.</p>';
+    let out = '<p class="intro">We eliminate all rules of the form ' + formatProduction(new Production('A', [])) + '.</p>';
 
     let newGrammar = grammar.clone();
     let prods = newGrammar.productions;
@@ -59,9 +59,9 @@ function eliminateEpsilonRules(grammar) {
 
 // converts all terminals into CNF nonterminals
 function bloatTerminals(grammar) {
-    let out = '<p class="intro">For every terminal x in our grammar, add a new nonterminal T<sub>x</sub>. '
-            + 'Then iterate through all rules and replace x with T<sub>x</sub>. '
-            + 'Finally, add the production T<sub>x</sub> &rarr; x.</p>';
+    let out = '<p class="intro">For every terminal ' + formatTerminal('x') + ' in our grammar, add a new nonterminal ' + formatNonterminal('T_x') + '. '
+            + 'Then iterate through all rules and replace ' + formatTerminal('x') + ' with ' + formatNonterminal('T_x') + '. '
+            + 'Finally, add the production ' + formatProduction(new Production('T_x', ['x'])) + '.</p>';
 
     let newGrammar = grammar.clone();
 
@@ -80,14 +80,14 @@ function bloatTerminals(grammar) {
     }
 
     out += '<p>This results in the following grammar:</p>';
-    out += newGrammar.toString();
+    out += newGrammar.toString(true);
     newGrammar.explanation = out;
     return newGrammar;
 }
 
 // eliminates all rules of the form A -> B where A, B are nonterminals
 function eliminateDirectRules(grammar) {
-    let out = '<p class="intro">We want to eliminate all direct rules of the form A &rarr; B where A, B are nonterminals. '
+    let out = '<p class="intro">We want to eliminate all direct rules of the form ' + formatProduction(new Production('A', ['B'])) + ' where ' + formatNonterminal('A') + ', ' + formatNonterminal('B') + ' are nonterminals. '
             + 'This is done by constructing a reachability graph for each nonterminal symbol. We then start with an empty rule set and add a new rule for every leaf that is reachable from a nonterminal on this graph.</p>';
 
     let newProds = new Array();
@@ -121,11 +121,15 @@ function eliminateDirectRules(grammar) {
             }
         }
 
-        out += '<p>For the nonterminal ' + formatSymbol(nonterminal, true) + ', we can reach the leaves ';
-        out += reachableStrings.map(str => str.map(x => formatSymbol(x, grammar.isNonterminal(x))).join(' ')).join(', ');
-        out += '; therefore we add the rules ';
-        out += reachableProds.map(prod => formatProduction(prod, grammar)).join(', ');
-        out += ' to our grammar.'
+        if (reachableStrings.length === 0) {
+            out += '<p>For the nonterminal ' + formatSymbol(nonterminal, true) + ', there are no reachable nodes. Therefore we add no new rules.</p>';
+        } else {
+            out += '<p>For the nonterminal ' + formatSymbol(nonterminal, true) + ', we can reach the leaves ';
+            out += reachableStrings.map(str => str.map(x => formatSymbol(x, grammar.isNonterminal(x))).join(' ')).join(', ');
+            out += '; therefore we add the rules ';
+            out += reachableProds.map(prod => formatProduction(prod, grammar)).join(', ');
+            out += ' to our grammar.</p>';
+        }
     }
 
     return new Grammar(newProds, grammar.nonterminals.clone(), grammar.terminals.clone(), grammar.start, grammar.longNonterminals, grammar.longTerminals, out);
