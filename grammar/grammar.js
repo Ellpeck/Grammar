@@ -160,7 +160,7 @@ function grammarFromJson(data) {
         prods.push(productionFromJson(prod));
     }
 
-    let grammar = new Grammar(prods, data['nonterminals'], data['terminals'], data['start'], data['longNonterminals'], data['longTerminals']);
+    let grammar = new Grammar(prods, data['nonterminals'], data['terminals'], data['start'], data['longNonterminals'], data['longTerminals'], data['explanation']);
     grammar.name = data['name'];
     return grammar;
 }

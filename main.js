@@ -1,9 +1,11 @@
 const grammars = new Array();
 
 $(function() {
-    let cookie = getCookieData();
-    if (cookie.length > 0) {
+    let cookie = getLocalStorage('grammar-data');
+    if (cookie && cookie.length > 0) {
+        console.log(cookie);
         let json = JSON.parse(cookie);
+        console.log(json);
         for (grammar of json) {
             addGrammar(grammarFromJson(grammar));
         }
@@ -121,7 +123,7 @@ $(function() {
     });
 
     $(window).on('unload', function() {
-        setCookieData(JSON.stringify(grammars.filter(x => x !== null)), 1);
+        setLocalStorage('grammar-data', JSON.stringify(grammars.filter(x => x !== null)), 1);
     });
 });
 

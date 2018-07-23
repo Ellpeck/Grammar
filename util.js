@@ -2,15 +2,12 @@ Array.prototype.clone = function() {
     return this.slice(0);
 }
 
-function setCookieData(data, lifespan) {
-    let date = new Date();
-    date.setTime(date.getTime() + (lifespan * 24 * 60 * 60 * 1000));
-    let expires = 'expires=' + date.toUTCString();
-    document.cookie = 'data=' + data + ';' + expires + ';path=/';
+function setLocalStorage(key, data) {
+    localStorage.setItem(key, data);
 }
 
-function getCookieData() {
-    return document.cookie.substring(5);
+function getLocalStorage(key) {
+    return localStorage.getItem(key);
 }
 
 // from https://stackoverflow.com/a/16436975/2766231
