@@ -28,6 +28,10 @@ body {
 .math {
     font-family: monospace;
 }
+.text {
+    font-family: sans-serif;
+    font-size: 90%;
+}
 
 .grammar {
     font-family: monospace;

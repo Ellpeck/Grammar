@@ -26,14 +26,20 @@ function eliminateEpsilonRules(grammar) {
             if (epsilonProd.isEpsilon()) {
                 let toEliminate = epsilonProd.left;
 
+                let newProds = new Array(); // @out
+
                 for (prod of prods) {
                     let tryOptions = function(right, i) {
                         if (i >= right.length) {
                             // add new production if it does not exist!
-                            let found = prods.find(p => (p.left === prod.left && arrayEquals(p.right, right)));
+                            let found = prods.find(p => (p.left === prod.left && arrayEquals(p.right, right)))
+                                  || newProds.find(p => (p.left === prod.left && arrayEquals(p.right, right)));
                             if (found === undefined) {
-                                prods.push(new Production(prod.left, right));
+                                let newProd = new Production(prod.left, right);
+                                prods.push(newProd);
                                 changed = true;
+
+                                newProds.push(newProd); // @out
                             }
                         } else {
                             tryOptions(right, i + 1);
@@ -46,9 +52,19 @@ function eliminateEpsilonRules(grammar) {
                     };
                     tryOptions(prod.right, 0);
                 }
+
+                if (newProds.length > 0) {
+                    out += '<p><strong>For the rule ' + formatProduction(epsilonProd, grammar);
+                    out += '</strong>, we add the ' + pluralize('rule', newProds.length) + ' ';
+                    out += formatProductionArray(newProds, grammar) + '.</p>';
+                }
             }
         }
     } while (changed);
+
+    out += '<p>After no new rules can be added, we remove all &epsilon;-rules, that is ';
+    out += formatProductionArray(prods.filter(prod => prod.isEpsilon()));
+    out += ', from our grammar.</p>';
 
     // actually remove the epsilon productions
     newGrammar.productions = prods.filter(prod => !prod.isEpsilon());
@@ -124,10 +140,10 @@ function eliminateDirectRules(grammar) {
         if (reachableStrings.length === 0) {
             out += '<p>For the nonterminal ' + formatSymbol(nonterminal, true) + ', there are no reachable nodes. Therefore we add no new rules.</p>';
         } else {
-            out += '<p>For the nonterminal ' + formatSymbol(nonterminal, true) + ', we can reach the leaves ';
-            out += reachableStrings.map(str => str.map(x => formatSymbol(x, grammar.isNonterminal(x))).join(' ')).join(', ');
-            out += '; therefore we add the rules ';
-            out += reachableProds.map(prod => formatProduction(prod, grammar)).join(', ');
+            out += '<p>For the nonterminal ' + formatSymbol(nonterminal, true) + ', we can reach the ' + pluralize('leave', reachableStrings.length) + ' ';
+            out += formatArray(reachableStrings, str => formatSymbolArray(str, grammar), ', ', ' and ');
+            out += '; therefore we add the ' + pluralize('rule', reachableProds.length) + ' ';
+            out += formatProductionArray(reachableProds);
             out += ' to our grammar.</p>';
         }
     }
@@ -169,9 +185,9 @@ function eliminateLongRules(grammar) {
                 newProdsForThisProd.push(newProd); // @out
             }
 
-            out += '<p><strong>Eliminate ' + formatProduction(prod, grammar) + '</strong> by adding rules '
-                    + newProdsForThisProd.map(prod => formatProduction(prod, grammar)).join(', ')
-                    + ' and new nonterminals ' + newNonterminalsForThisProd.map(prod => formatSymbol(prod, true)).join(', ') + '.</p>';
+            out += '<p><strong>Eliminate ' + formatProduction(prod, grammar) + '</strong> by adding the ';
+            out += pluralize('rule', newProdsForThisProd.length) + ' ' + formatProductionArray(newProdsForThisProd);
+            out += ' and new ' + pluralize('nonterminal', newNonterminalsForThisProd.length) + ' ' + formatNonterminalArray(newNonterminalsForThisProd) + '.</p>';
         } else {
             newProds.push(prod.clone());
         }

@@ -35,21 +35,21 @@ function formatNonterminal(symbol) {
 }
 
 function formatProduction(prod, grammar) {
-    return '<span class="prod">' + formatSymbol(prod.left, true) + ' &rarr; ' + formatSymbolString(prod.right, grammar) + '</span>';
+    return '<span class="prod">' + formatSymbol(prod.left, true) + '&nbsp;&rarr;&nbsp;' + formatSymbolString(prod.right, grammar) + '</span>';
 }
 
 function formatSymbolString(string, grammar) {
     if (string.length === 0) {
         return '&epsilon;';
     } else {
-        return string.map(symbol => formatSymbol(symbol, grammar)).join(' ');
+        return string.map(symbol => formatSymbol(symbol, grammar)).join('&nbsp;');
     }
 }
 
 function formatGrammar(grammar, inline) {
     let classes = inline ? ' grammar-inline' : ' grammar-box';
     let text = '<div class="grammar' + classes + '">';
-    text += grammar.name + ' = (N, T, P, ' + formatSymbol(grammar.start, true) + ') <em>where</em><br>';
+    text += grammar.name + ' = (N, T, P, ' + formatSymbol(grammar.start, true) + ') <span class="text">where</span><br>';
     text += 'N = {' + grammar.nonterminals.map(x => formatSymbol(x, true)).join(', ') + '}<br>';
     text += 'T = {' + grammar.terminals.map(x => formatSymbol(x, false)).join(', ') + '}<br>';
 
@@ -75,4 +75,52 @@ function prodsToString(grammar, inline) {
     text += '</span>}';
 
     return text;
+}
+
+
+function pluralize(word, amount, plural) {
+    if (amount === 1) {
+        return word;
+    } else {
+        if (plural !== undefined) {
+            return plural;
+        } else {
+            return word + 's';
+        }
+    }
+}
+
+function formatArray(array, formatter, separator, lastSeparator) {
+    if (formatter === undefined) {
+        formatter = (x => String(x));
+    }
+    if (separator === undefined) {
+        separator = ', ';
+    }
+    if (lastSeparator === undefined) {
+        lastSeparator = separator;
+    }
+
+    if (array.length > 1) {
+        let formatted = array.map(formatter);
+        return formatted.slice(0, -1).join(separator) + lastSeparator + formatted.slice(-1);
+    } else if (array.length === 1) {
+        return formatter.call(undefined, array[0]);
+    } else { // array.length === 0
+        return '';
+    }
+}
+
+function formatProductionArray(productions, grammar) {
+    return formatArray(productions, prod => formatProduction(prod, grammar), ', ', ' and ');
+}
+
+function formatSymbolArray(symbols, grammar) {
+    return formatArray(symbols, symbol => formatSymbol(symbol, grammar), ', ', ' and ');
+}
+function formatNonterminalArray(symbols) {
+    return formatArray(symbols, symbol => formatSymbol(symbol, true), ', ', ' and ');
+}
+function formatTerminalArray(symbols, grammar) {
+    return formatArray(symbols, symbol => formatSymbol(symbol, false), ', ', ' and ');
 }
