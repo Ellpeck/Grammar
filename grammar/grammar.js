@@ -124,33 +124,7 @@ class Grammar {
     }
 
     toString(inline) {
-        let text = '';
-        text += this.name + ' = (N, T, P, ' + formatSymbol(this.start, true) + ') <em>where</em><br>';
-        text += 'N = {' + this.nonterminals.map(x => formatSymbol(x, true)).join(', ') + '}<br>';
-        text += 'T = {' + this.terminals.map(x => formatSymbol(x, false)).join(', ') + '}<br>';
-
-        text += this.prodsToString(inline);
-        text += '<br>';
-
-        return text;
-    }
-
-    prodsToString(inline) {
-        let text = 'P = {' + (inline ? '' : '<br>') + '<span' + (inline ? '' : ' class="prod-display"') + '>';
-        for (let i = 0; i < this.productions.length; i++) {
-            let prod = this.productions[i];
-            text += formatProduction(prod, this);
-            if (i < this.productions.length - 1) {
-                text += ', ';
-            }
-
-            if (!inline) {
-                text += '<br>';
-            }
-        }
-        text += '</span>}';
-
-        return text;
+        return formatGrammar(this, inline);
     }
 }
 

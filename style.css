@@ -7,10 +7,6 @@ body {
     min-height: 150px;
 }
 
-#grammars {
-    font-family: monospace;
-}
-
 #grammar-alert {
     display: none;
 }
@@ -29,8 +25,17 @@ body {
     border-color: #b5bfff;
 }
 
+.math {
+    font-family: monospace;
+}
+
+.grammar {
+    font-family: monospace;
+}
+
 .nonterm, .term, .word {
     font-family: monospace;
+    font-style: normal;
 }
 
 .nonterm {
@@ -63,6 +68,18 @@ body {
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+}
+
+.explanation h3 {
+    font-size: 1.4rem;
+}
+
+.explanation .intro {
+    font-style: italic;
+}
+
+.explanation .grammar {
+    margin: 0 2rem 1rem 2rem;
 }
 
 #cyk {

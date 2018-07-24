@@ -143,7 +143,7 @@ function addGrammar(grammar) {
     html += '</div>';
 
     html += '<div class="col-md-8 cut-text">'
-    html += grammar.prodsToString(true);
+    html += prodsToString(grammar, true);
     html += '</div>';
 
     html += '<div class="col-md-3">';

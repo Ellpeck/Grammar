@@ -35,7 +35,7 @@ function formatNonterminal(symbol) {
 }
 
 function formatProduction(prod, grammar) {
-    return formatSymbol(prod.left, true) + ' &rarr; ' + formatSymbolString(prod.right, grammar);
+    return '<span class="prod">' + formatSymbol(prod.left, true) + ' &rarr; ' + formatSymbolString(prod.right, grammar) + '</span>';
 }
 
 function formatSymbolString(string, grammar) {
@@ -44,4 +44,35 @@ function formatSymbolString(string, grammar) {
     } else {
         return string.map(symbol => formatSymbol(symbol, grammar)).join(' ');
     }
+}
+
+function formatGrammar(grammar, inline) {
+    let classes = inline ? ' grammar-inline' : ' grammar-box';
+    let text = '<div class="grammar' + classes + '">';
+    text += grammar.name + ' = (N, T, P, ' + formatSymbol(grammar.start, true) + ') <em>where</em><br>';
+    text += 'N = {' + grammar.nonterminals.map(x => formatSymbol(x, true)).join(', ') + '}<br>';
+    text += 'T = {' + grammar.terminals.map(x => formatSymbol(x, false)).join(', ') + '}<br>';
+
+    text += prodsToString(grammar, inline);
+    text += '</div>';
+
+    return text;
+}
+
+function prodsToString(grammar, inline) {
+    let text = 'P = {' + (inline ? '' : '<br>') + '<span class="math ' + (inline ? 'prod-display-inline' : 'prod-display') + '">';
+    for (let i = 0; i < grammar.productions.length; i++) {
+        let prod = grammar.productions[i];
+        text += formatProduction(prod, this);
+        if (i < grammar.productions.length - 1) {
+            text += ', ';
+        }
+
+        if (!inline) {
+            text += '<br>';
+        }
+    }
+    text += '</span>}';
+
+    return text;
 }

@@ -15,6 +15,10 @@ class Production {
     clone() {
         return new Production(this.left, this.right.clone());
     }
+
+    toString() {
+        return formatProduction(this);
+    }
 }
 
 function productionFromJson(json) {
