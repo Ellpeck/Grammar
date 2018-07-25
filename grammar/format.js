@@ -42,7 +42,8 @@ function formatSymbolString(string, grammar) {
     if (string.length === 0) {
         return '&epsilon;';
     } else {
-        return string.map(symbol => formatSymbol(symbol, grammar)).join('&nbsp;');
+        let joiner = (grammar && grammar.longTerminals) ? '&nbps;' : '';
+        return string.map(symbol => formatSymbol(symbol, grammar)).join(joiner);
     }
 }
 

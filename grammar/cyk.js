@@ -49,3 +49,29 @@ function parseNonterminal(grammar, result, leftSymbols, rightSymbols) {
         }
     }
 }
+
+// finds all accepted (that is from the start symbol derivable) subsequences of a word
+function getAcceptedSubsequences(grammar, word, N) {
+    if (N === undefined) {
+        N = cyk(grammar, word);
+    }
+
+    let subsequences = new Array();
+    for (let i = 0; i < N.length; i++) {
+        sequenceLoop:
+        for (let j = i; j < N[i].length; j++) {
+            if (N[i][j].has(grammar.start)) {
+                let newSubsequence = word.slice(i, j + 1);
+                // check if it already exists, do not allow duplicates
+                for (let string of subsequences) {
+                    if (arrayEquals(string, newSubsequence)) {
+                        continue sequenceLoop;
+                    }
+                }
+                subsequences.push(word.slice(i, j + 1));
+            }
+        }
+    }
+
+    return subsequences;
+}

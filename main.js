@@ -77,13 +77,19 @@ $(function() {
             }
             $('#cyk-table').html(html);
 
-            $('#cyk-before').html('CYK Output of <span class="word">' + raw + '</span> for grammar ' + grammar.name + ':');
+            $('#cyk-before').html('<p>CYK Output of <span class="word">' + raw + '</span> for grammar ' + grammar.name + ':</p>');
             if (tokens.length === 0) {
-                $('#cyk-after').html('Grammars in Chomsky Normal form cannot derive the <span class="word">&epsilon;</span>-word.');
-            } else if (N[0][tokens.length - 1].has(grammar.start)) {
-                $('#cyk-after').html('As the parsed word is derivable by the start symbol ' + formatSymbol(grammar.start, true) + ', the word <span class="word">' + raw + '</span> is part of the language.');
+                $('#cyk-after').html('<p>Grammars in Chomsky Normal form cannot derive the <span class="word">&epsilon;</span>-word.</p>');
             } else {
-                $('#cyk-after').html('As the parsed word is <em>not</em> derivable by the start symbol ' + formatSymbol(grammar.start, true) + ', the word <span class="word">' + raw + '</span> is <em>not</em> part of the language.');
+                let out = '';
+                if (N[0][tokens.length - 1].has(grammar.start)) {
+                    out += 'As the parsed word is derivable by the start symbol ' + formatSymbol(grammar.start, true) + ', the word <span class="word">' + raw + '</span> is part of the language.';
+                } else {
+                    out += 'As the parsed word is <em>not</em> derivable by the start symbol ' + formatSymbol(grammar.start, true) + ', the word <span class="word">' + raw + '</span> is <em>not</em> part of the language.';
+                }
+                let acceptedSubsequences = getAcceptedSubsequences(grammar, tokens, N);
+                out += '<p><em>Accepted subsequences:</em> ' +  formatArray(acceptedSubsequences, str => formatSymbolString(str, grammar), ', ', ' and ')  + '</p>';
+                $('#cyk-after').html(out);
             }
         }
     });
